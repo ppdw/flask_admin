@@ -3,7 +3,7 @@ agent_blueprint = Blueprint('agent', __name__, template_folder='templates', stat
 
 @agent_blueprint.route('/index/')
 def index():
-    return '123'
+    return '1234'
 @agent_blueprint.route('/bill/')
 def bill():
     return ''
