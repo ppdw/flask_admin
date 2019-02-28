@@ -88,4 +88,3 @@ def ajax_log():
     for x in log_info:
         temp.append(x.to_json())
     return json.dumps(temp)
-
