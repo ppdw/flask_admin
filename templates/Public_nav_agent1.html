@@ -1,0 +1,135 @@
+		<aside id="offCanvasSide-left" class="mui-off-canvas-left">
+			<div id="offCanvasSideScroll-left" class="mui-scroll-wrapper">
+				
+				<div class="mui-scroll">
+				<ul class="mui-table-view mui-table-view-chevron">
+					<li class="mui-table-view-cell">
+						<a href="{:U('Home/index',array('id'=>$admin_id))}"><span class='mui-icon mui-icon-contact' style='padding: 0 10px 0 0;font-size: 40px;'></span>用户信息</a>
+					</li>
+					<foreach name="agent_nav" item="v" key="k">
+					<?php if(in_array($k,$agent_power)){ ?>
+					<li class="mui-table-view-cell menu_li">
+						<a href="{:U($v[url])}" ><span class='mui-icon iconfont icon4' style='padding: 0 10px 0 0;font-size: 30px;'></span>{$v.name}</a>
+					</li>
+					<?php }?>
+				 	</foreach>
+					<li class="mui-table-view-cell menu_li">
+						<a href="{:U('Home/logout')}" ><span class="mui-icon iconfont icon-tuichu1"></span>退出登录</a>
+					</li>
+				</ul>
+			</div>
+			</div>
+		</aside>
+<!--左侧滑菜单部分-->
+<script src="_Mobile_/js/jquery-1.8.3.min.js"></script> 
+<script src="_Mobile_/js/my_food_plan_pick_foods.js"></script>
+<script src="_Mobile_/js/jquery.uitablefilter.js" type="text/javascript" charset="utf-8"></script>
+<script src="_Mobile_/js/tablesort.min.js"></script>
+<script src="_Mobile_/js/tablesort.number.js"></script>
+<script src="_Mobile_/js/tablesort.date.js"></script>
+<script src="_Mobile_/js/moment.js"></script>
+<script src="_Mobile_/js/daterangepicker.js"></script>
+<script>
+ mui.init({
+ 	gestureConfig:{
+	   drag: true//默认为true
+	}
+ });
+ $(function(){
+ 	if({$nav_flag}==1){
+ 		$('.ifram_btn').live('tap',function(){
+			var link=this.getAttribute('href');
+			Sys_Main.location.href=link;
+		});
+ 	}else{
+		var els=$("[href$='.html']");
+		var bls=$("[href$='.php']");
+		var als=$("[href$='.apk']");
+		var pls=$("[href$='.plist']");
+		for(var i=0;i<els.length;i++){
+			els[i].addEventListener('tap',function(){
+				openCustUR(this.getAttribute('href'));
+			});
+		}
+		for(var i=0;i<bls.length;i++){
+			bls[i].addEventListener('tap',function(){
+				openCustUR(this.getAttribute('href'));
+			});
+		}
+		for(var i=0;i<als.length;i++){
+			als[i].addEventListener('tap',function(){
+				openCustUR(this.getAttribute('href'));
+			});
+		}
+		for(var i=0;i<pls.length;i++){
+			pls[i].addEventListener('tap',function(){
+				openCustUR(this.getAttribute('href'));
+			});
+		}
+		mui.plusReady(function(){
+			plus.nativeUI.closeWaiting();
+			mui,currentWebview.show();
+		});
+ 	}
+})
+
+
+function openCustUR(link){
+	mui.openWindow({
+		url:link,
+		show:{
+			autoShow:true,
+			aniShow:'slide-in-right',
+			duration:400
+		},
+		waiting:{autoShow:false,title:'加载中。。。'}});
+		
+} 
+
+$('.icon_li').each(function(){
+	var index=$(this).index();
+	$(this).find('.span_icon').addClass('icon'+index);	
+});
+//日期范围选择器
+$(function(){
+	$('#date_picker').daterangepicker({startDate:"{$starttime}",endDate:"{$endtime}"});
+})
+
+//表格筛选
+$(function() { 
+  var theTable = $('#item1-table')
+
+  $("#filter").keyup(function() {
+    $.uiTableFilter( theTable, this.value );
+  })
+
+  $('#filter-form').submit(function(){
+theTable.find("tbody > tr:visible").mousedown();
+    return false;
+  }).focus(); //Give focus to input field
+
+
+//当屏幕宽度大于765时，左边菜单栏固定
+if($(window).width()>765){
+	$('.mui-off-canvas-left').css({"width":"230px","visibility":"visible"});
+	$('.mui-off-canvas-right').remove();
+	var rightW=$(window).width()-230
+	$('.mui-inner-wrap').css('width',rightW);
+	$('.mui-inner-wrap').css({'transform':'translate(230px)',"box-shadow":"-4px 0 4px rgba(0,0,0,.2), 4px 0 4px rgba(0,0,0,.5)"});
+	$('.mui-off-canvas-backdrop').css({"display":"none"})
+	//清除左右滑动事件
+//	mui.init({
+//		gestureConfig:{
+//		   drag: false//默认为true
+//		}
+//	});
+}
+//$('.mui-pull-left').on('tap',function(){
+//	if($('.mui-off-canvas-left').has('mui-active')){
+////		alert('1')
+//	}
+//})
+
+});
+</script>
+			

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>后台管理系统</title>
+    <script src="/static/Mobile/js/jquery-1.8.3.min.js"></script>
+    <link href="/static/Mobile/css/mui.min.css" rel="stylesheet"/>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        header.mui-bar {
+            background: #3da9fe;
+        }
+
+        header .mui-title,
+        header a {
+            color: #fff;
+        }
+
+        .mui-content {
+            margin-top: 20px;
+        }
+
+        #login_box li {
+            margin-top: 10px;
+        }
+
+        #login_box input {
+            border-radius: 5px;
+            line-height: 20px;
+            border: 1px solid #ccc;
+            padding-left: 5px;
+        }
+
+        .mui-content {
+            text-align: center;
+            padding: 5px;
+        }
+
+        #login .mui-btn-block {
+            padding: 5px 0;
+            margin: 15px 0;
+        }
+
+        #login .mui-btn {
+            padding: 9px 5px;
+            border-radius: 5px;
+        }
+
+        .mui-input-group {
+            background: #eee;
+        }
+
+        .mui-input-row label {
+            width: 25%;
+            text-align: right;
+            padding-right: 0;
+            padding-left: 0;
+        }
+
+        .mui-input-row {
+            margin: 10px;
+        }
+
+        .mui-input-row label ~ input,
+        .mui-input-row label ~ select {
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding-left: 5px;
+            width: 74%;
+        }
+
+        .mui-input-group:before,
+        .mui-input-group .mui-input-row:after,
+        .mui-input-group:after {
+            background-color: #eee;
+        }
+
+        .mui-input-row #verify ~ .mui-icon-clear {
+            right: 25%;
+        }
+    </style>
+
+</head>
+
+<body id='login' class='mui-android mui-android-4-1 mui-android-5-1'>
+<header class="mui-bar mui-bar-nav">
+    <h1 class="mui-title">后台管理系统</h1>
+</header>
+<div class="mui-content">
+    <form class="mui-input-group" id="logfm" name="logfm" onsubmit="return checkfm()" method="post">
+
+        <div class="mui-input-row">
+            <label>用户名：</label>
+            <input type="text" name="admin_user" class='mui-input-clear' id='account' placeholder="请输入用户名"
+                   required="用户名不能为空">
+        </div>
+
+        <div class="mui-input-row">
+            <label>密&nbsp;&nbsp;&nbsp;&nbsp;码：</label>
+            <input type="password" name="admin_pwd" class='mui-input-clear' placeholder="请输入密码" id='password'
+                   required="密码不能为空">
+        </div>
+    </form>
+
+
+    <button id='login_btn' type="button" class="mui-btn mui-btn-block mui-btn-primary">登 &nbsp;&nbsp;录</button>
+
+</div>
+
+</body>
+<script>
+    $(function () {
+        $('#login_btn').click(function () {
+            checkfm();
+        });
+//
+    })
+
+    function checkfm() {
+        var admin_user = $('#account').val();
+        var admin_pwd = $('#password').val();
+        if (admin_user.length < 1) {
+            $('#account').css('border', '1px solid red');
+            alert('您输入的用户名错误，请重新输入');
+            return false;
+        }
+        if (admin_pwd.length < 1) {
+            $('#password').css('border', '1px solid red');
+            alert('您输入的密码错误，请重新输入');
+            return false;
+        }
+        $.post("{{ url_for('admin.act_admin_login') }}", $('#logfm').serialize(), function (msg) {
+            if (msg.error > 0) {
+					alert(msg.info)
+				} else {
+					location.href = msg.href;
+				}
+        }, 'json');
+    }
+</script>
+
+
+</html>

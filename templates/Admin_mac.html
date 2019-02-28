@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>编辑登录权限</title>
+		<script src="_Mobile_/js/mui.min.js"></script>
+		<link href="_Mobile_/css/mui.min.css" rel="stylesheet" />
+		<link href="_Mobile_/css/public.css" rel="stylesheet" />
+		<link href="_Mobile_/css/iconfont.css" rel="stylesheet" />
+		<style type="text/css">
+			.mui-slider-indicator {
+				bottom: 4px;
+				background: #fff;
+			}
+			
+			.mui-slider,.mui-scroll-wrapper {
+				
+				background: #fff;
+			}
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~button {
+				background: #fff;
+				border: 1px solid #ccc!important;
+				border-radius: 5px;
+				padding-left: 5px;
+				width: 70%;
+			}
+			
+			.mui-input-group:before,
+			.mui-input-group .mui-input-row:after,
+			.mui-input-group:after {
+				background-color: #eee;
+			}
+			
+			.line {
+				width: 100%;
+				height: 1px;
+				background: #ccc;
+			}
+			
+			.checkbox {
+				padding: 15px 10px;
+				font-family: 'Helvetica Neue', Helvetica, sans-serif;
+				padding-left: 10%;
+			}
+			
+			.checkbox span {
+				/*width: 25%;*/
+				text-align: right;
+				display: inline-block;
+			}
+			
+			.checkbox label {
+				padding: 0 20px 0 10px;
+			}
+			
+			.mui-input-group,
+			.checkbox,
+			.mui-input-row,.mui-control-content,.mui-content {
+				background: #F7F7F7;
+			}
+		</style>
+
+	</head>
+
+	<body class='mui-fullscreen'>
+
+		<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable">
+			<!--右侧滑菜单部分-->
+			<include file="Public:nav2"/>
+			<!--主界面部分-->
+			<div class="mui-inner-wrap">
+
+				<header class="mui-bar mui-bar-nav" style="background: #3DA9FE;box-shadow: 0 1px 9px #999;">
+					<a href="{:U('index')}" class="mui-icon mui-icon-left-nav mui-pull-left"></a>
+					<h1 class="mui-title">编辑登录权限</h1>
+					<a href="#offCanvasSide-right" class="mui-icon iconfont icon-zhilupai mui-pull-right"></a>
+				</header>
+
+				<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+					<div class="mui-scroll">
+						
+						<form class="mui-input-group" id="form1" action="__URL__/change_mac" method="post">
+						
+							<div class="mui-input-row">
+								<label style="width: 32%;">可绑定mac数：</label>
+								<input type="number" value="{$info.mac_num}" name="mac_num" style="width:68%;"/>
+								<input type="hidden" name="id" value="{$id}">
+							</div><div class="line"></div><!--
+							<div class="mui-input-row">
+								<label style="width: 32%;">设备名称</label>
+								<label style="width: 32%;">mac地址</label> 
+							</div><div class="line"></div>	
+							-->
+							<foreach name="mac_arr_list" item="v" key="k">
+							<div class="mui-input-row">
+								<label style="width: 32%;">{$v}：</label>
+								<label for=""  style="width: 50%;">{$k}</label>
+								<button class="mui-btn mui-btn-blue" style="background: #007aff;padding: 10px 0;text-align: center;"><a href="{:U('clear_mac',array('id'=>$id,'mac'=>$k))}" style="color:#fff;">清除</a></button>
+							</div>
+							</foreach>
+						</form>
+						
+
+				
+			</div>
+			<div style='height: 50px;text-align: center;border:1px solid #eee;padding: 5px;position:fixed;bottom:0;left:0;width: 100%;background: #fff;z-index: 9999;'>
+				<button type="button" class="mui-btn mui-btn-blue" id="sub" style="font-size: 16px;width: 200px;">确&nbsp;&nbsp;&nbsp;&nbsp;定</button>
+			</div>			
+		</div>
+		<!-- off-canvas backdrop -->
+				<div class="mui-off-canvas-backdrop"></div>
+		<!--页面主体-----end-->
+		</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		mui.init({
+			pullRefresh: {
+				container: '#pullrefresh',
+				down:{
+					callback:function(){
+						window.location.reload();
+					}
+				}
+			}
+		});
+		//主界面和侧滑菜单界面均支持区域滚动；
+		mui('#offCanvasSideScroll-left').scroll();
+		mui('#offCanvasSideScroll-right').scroll();
+		mui('#pullrefresh').scroll();
+		$(function(){
+			$('#sub').click(function(){
+				$('#form1').submit();
+			});
+		})
+	</script>
+
+</html>
