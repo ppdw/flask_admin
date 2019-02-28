@@ -1,0 +1,127 @@
+﻿<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+	<title>{$info.Title|default=$partner}</title>
+	<link href="_Mobile_/css/css.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" type="text/css" href="_Mobile_/css/ios8.css">
+	<script src="_Mobile_/js/jquery.js"></script>
+	<script src="_Mobile_/js/jquery.zclip.js"></script>	
+	<script src="_Mobile_/js/swipe.min.js"></script>
+	<meta name="keywords" value="{$info.Title|default=$partner}">
+	<meta name="description" value="{$info.Title|default=$partner}">
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<style type="text/css">
+<!--
+.STYLE2 {
+	font-size: 8px;
+	color: Green;
+}
+.STYLE3 {font-size: 12px; }
+.STYLE8 {color: #FFFF00}
+.STYLE9 {	font-size: 18px;
+	font-weight: bold;
+	color: #FF0000;
+}
+-->
+    </style>
+</head>
+<body>
+ 
+	
+<!--Banner begin-->
+<div class="banner">
+    <div id="jsSlider" style="overflow: hidden; visibility: visible;">
+        <ul class="banner-list" style="list-style: none; margin: 0px;">            
+            <li><a href="#"><img src="{$info.Banner1|default='_Mobile_/images/a_10.jpg'}" width="100%" /></a></li>
+            <li><a href="#"><img src="{$info.Banner2|default='_Mobile_/images/a_11.jpg'}" width="100%" /></a></li>
+        </ul>
+    </div>
+    <div id="jsSliderNav" class="nav_icon">
+        <strong class="current"></strong><strong class=""></strong>
+    </div>
+    <script type="text/javascript" src="_Mobile_/js/swipe.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var mySilder = new Swipe(document.getElementById('jsSlider'), {
+                startSlide: 0,
+                speed: 400,
+                auto: 3000,
+                callback: function (event, index, elem) {
+                    var oNav = document.getElementById('jsSliderNav');
+                    var aA = oNav.getElementsByTagName('strong');
+                    for (var i = 0; i < aA.length; i++) {
+                        aA[i].className = '';
+                    }
+                    aA[index].className = 'current';
+                }
+            });
+        });
+    </script>
+</div>
+<!--Banner end-->
+
+
+	<div class="neirong">
+		<div style="clear: both; padding-bottom: 2%;"></div>
+		<div class="contact1">
+			<span class="STYLE8"></span> </div>
+		<section class="h-section">
+			<ul class="itemul itemul1">
+        <li>
+          <div class="item-t pr cl">
+            <div class="logo fl">
+              <img src="{$info.IOS|default='_Mobile_/images/haofadwc.png'}" alt="手游大厅" width="100%">
+              <div class="logocategory"></div>
+            </div>
+            <div class="licon pr fr">
+              <h3>{$info.Title|default=$partner} </h3>
+              <div class="liintr STYLE2"><span class="STYLE3">下载量：10万+</span></div>
+              <div class="liintr">
+                <p class="STYLE3"></p>
+              </div>
+                <span class="STYLE9"></span><p></p>
+              </div>
+                      <div class="down-link pa">
+              <a data-url="" href="{$downlink}">安卓版下载</a>
+            </div>
+            </div>
+
+            
+      </li>
+
+  <li>
+  <div class="item-t pr cl">
+        <div class="logo fl"> <img src="{$info.Android|default='_Mobile_/images/haofadwc1.png'}" alt="手游大厅" width="100%">
+            <div class="logocategory"></div>
+        </div>
+        <div class="licon pr fr">
+          <h3>{$info.Title|default=$partner} </h3>
+          <div class="liintr STYLE2"><span class="STYLE3">下载量：20万+</span></div>
+          <div class="liintr">
+            <p class="STYLE3"></p>
+      </div>
+    </div>
+            <div class="down-link pa">
+              <a data-url="" href="{$downlink}">苹果版下载</a></div>
+      </div>
+  </li>
+
+</ul>
+		</section>
+		
+
+	<!--低部 begin-->
+	<footer class="foot">
+		
+		    <div class="foot"><span class="STYLE10">Copyright © 2016-2020 {$info.Title|default=$partner} 版权所有  京ICP备16021983号-1</span><br />
+              <span class="STYLE10"></span></div>
+
+</footer>
+	<!--低部 end-->
+ 
+	
+</body>
+
+
+</html>

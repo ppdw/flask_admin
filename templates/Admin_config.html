@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>系统配置</title>
+		<script src="_Mobile_/js/mui.min.js"></script>
+		<link href="_Mobile_/css/mui.min.css" rel="stylesheet" />
+		<link href="_Mobile_/css/public.css" rel="stylesheet" />
+		<link href="_Mobile_/css/iconfont.css" rel="stylesheet" />
+
+		<style type="text/css">
+			.mui-slider-indicator {
+				bottom: 4px;
+				background: #fff;
+			}
+			
+			.mui-slider,.mui-scroll-wrapper {
+				background: #fff;
+			}
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~button {
+				background: #fff;
+				border: 1px solid #ccc;
+				border-radius: 5px;
+				padding-left: 5px;
+				width: 74%;
+			}
+			
+			.mui-input-group:before,
+			.mui-input-group .mui-input-row:after,
+			.mui-input-group:after {
+				background-color: #eee;
+			}
+			.line {
+				width: 100%;
+				height: 1px;
+				background: #ccc;
+			}
+			.checkbox {
+				padding: 15px 10px;
+				font-family: 'Helvetica Neue', Helvetica, sans-serif;
+				
+			}
+			
+			.checkbox span {
+				/*width: 25%;*/
+				text-align: right;
+				display: inline-block;
+			}
+			
+			.checkbox label {
+				padding: 0 10px 0 10px;
+			}
+			
+			.mui-input-group,
+			.checkbox,
+			.mui-input-row,.mui-control-content,.mui-content {
+				background: #F7F7F7;
+			}
+			
+			th,td{border-right: 1px solid #ccc;}
+			.item1-table tr{border: 1px solid #ccc;}
+			.item1-table td, .item1-table th{
+				padding: 5px ;
+				text-align: center;
+				border-right:1px solid #ccc;
+			}
+			.mui-pull-bottom-pocket{height: 150px;}
+			.mui-pull{bottom:0;top:10px;}
+			.item3-title {
+				height: 40px;
+				width: 100%;
+				background: #ccc;
+				line-height: 40px;
+				padding: 0 10px;
+			}
+			.item1-table input[type=text]{
+				width:200px;padding:0;
+			}
+			input[type=number]{margin:0;padding: 0;border:none;text-align:center;}
+		</style>
+
+	</head>
+
+	<body class='mui-fullscreen'>
+
+		<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable">
+			<!--右侧滑菜单部分-->
+			<include file="Public:nav"/>
+			<!--主界面部分-->
+			<div class="mui-inner-wrap">
+
+				<header class="mui-bar mui-bar-nav" style="background: #3DA9FE;box-shadow: 0 1px 9px #999;">
+					<a href="#offCanvasSide-left" class="mui-icon mui-icon-bars mui-pull-left"></a>
+					<h1 class="mui-title">系统配置</h1>
+					<a href="#offCanvasSide-right" class="mui-icon iconfont icon-zhilupai mui-pull-right"></a>
+				</header>
+				
+				<!--滑动导航栏-->
+				<!--滑动导航栏-->
+				<div style="padding: 2px 2px 0 2px;background: #fff;border-bottom: 1px solid #ccc;position:fixed;top:44px;left:0;z-index: 4;">
+					<div id="segmentedControl" class="mui-segmented-control mui-segmented-control-inverted mui-segmented-control-primary">
+						<a class="mui-control-item mui-active" href="#" ><h2>Data_hot</h2></a>
+						
+					</div>
+				</div>
+				
+
+				<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper" style="margin-top:40px;overflow:scroll;overflow-x:auto;">
+					<div class="mui-scroll">
+  
+						<div id="item3" class="mui-control-content mui-active">
+						    <form class="mui-input-group" action="__URL__/insert_config" method="post" id="form3" > 
+							<div class="item-box">
+								<div class="mui-input-row">	
+												<label style="width:25%"><h3>皮肤UIID：{$UIID}</h3></label>
+											</div>	
+											<div class='line'></div>
+							<div  class="mui-input-row pay_agent">
+								<label style="width:25%">&nbsp</label>
+								<label style="width:10%">代理：</label>
+								<select name="agentid" style="width:35%;float:left;" id="agentid">
+									<volist name="agent_list" id="AgentName">
+											<option value="{$key}" <eq name="agentid" value="$key">selected</eq>>{$AgentName}</option>
+									</volist>
+								</select>
+								<label style="width:19%">&nbsp</label>
+							</div>
+							
+							
+							<label style="width:50%;">全选：<input type="checkbox"  class="sel_game"/></label>
+							<div class='line'></div>
+											
+											<div class="mui-input-row">
+												<label style="width:13%">&nbsp</label>
+												<label style="width:37%;float:left">快速登录：
+												<input type="checkbox" name="IsShowQuickLogin"  value="1" <eq name="data.IsShowQuickLogin" value="1">checked</eq>/>
+												</label >
+												<label style="width:37%;float:left;">账号登录 ：<input type="checkbox" name="IsShowAccountLogin" value="1" <eq name="data.IsShowAccountLogin" value="1">checked</eq>/></label>
+												<label style="width:13%">&nbsp</label>
+											</div>
+
+											<div class='line'></div>
+
+											<div class="mui-input-row">
+												<label style="width:13%">&nbsp</label>
+												<label style="width:37%;float:left">账号注册  ：
+												<input type="checkbox" name="IsShowRegister"  value="1" <eq name="data.IsShowRegister" value="1">checked</eq>/>
+												</label >
+												<label style="width:37%;float:left;">微信登录 ：<input type="checkbox" name="IsShowWeiXinLogin" value="1" <eq name="data.IsShowWeiXinLogin" value="1">checked</eq>/></label><label style="width:13%">&nbsp</label>
+											</div>
+											<div class='line'></div>
+
+											<div class="mui-input-row"><label style="width:13%">&nbsp</label>
+												<label style="width:37%;float:left">首冲  ：
+												<input type="checkbox" name="IsShowFirstRecharge"  value="1" <eq name="data.IsShowFirstRecharge" value="1">checked</eq>/>
+												</label >
+												<label style="width:37%;float:left;">赠送弹头 ：<input type="checkbox" name="IsShowDanTou" value="1" <eq name="data.IsShowDanTou" value="1">checked</eq>/></label><label style="width:13%">&nbsp</label>
+											</div><div class='line'></div>
+
+											<div class="mui-input-row"><label style="width:13%">&nbsp</label>
+												<label style="width:37%;float:left">弹头回收  ：
+												<input type="checkbox" name="IsShowDanTouHuiShou"  value="1" <eq name="data.IsShowDanTouHuiShou" value="1">checked</eq>/>
+												</label >
+												<label style="width:37%;float:left;">弹头使用 ：<input type="checkbox" name="IsShowDanTouUse" value="1" <eq name="data.IsShowDanTouUse" value="1">checked</eq>/></label><label style="width:13%">&nbsp</label>
+											</div><div class='line'></div>
+
+											<div class="mui-input-row"><label style="width:13%">&nbsp</label>
+												<label style="width:37%;float:left">财富榜  ：
+												<input type="checkbox" name="IsShowRank"  value="1" <eq name="data.IsShowRank" value="1">checked</eq>/>
+												</label >
+												<label style="width:37%;float:left;">好友 ：<input type="checkbox" name="IsShowFriend" value="1" <eq name="data.IsShowFriend" value="1">checked</eq>/></label><label style="width:13%">&nbsp</label>
+											</div><div class='line'></div>
+
+											<div class="mui-input-row"><label style="width:13%">&nbsp</label>
+												<label style="width:37%;float:left">好友搜索  ：
+												<input type="checkbox" name="IsShowSearchFriend"  value="1" <eq name="data.IsShowSearchFriend" value="1">checked</eq>/>
+												</label >
+												<label style="width:37%;float:left;">聊天：<input type="checkbox" name="IsShowChat" value="1" <eq name="data.IsShowChat" value="1">checked</eq>/></label><label style="width:13%">&nbsp</label>
+											</div><div class='line'></div>
+
+											<div class="mui-input-row"><label style="width:13%">&nbsp</label>
+												<label style="width:37%;float:left">幸运转盘  ：
+												<input type="checkbox" name="IsShowZhuanPan"  value="1" <eq name="data.IsShowZhuanPan" value="1">checked</eq>/>
+												</label >
+												<label style="width:37%;float:left;">完善资料 ：<input type="checkbox" name="IsShowCompleteInfo" value="1" <eq name="data.IsShowCompleteInfo" value="1">checked</eq>/></label><label style="width:13%">&nbsp</label>
+											</div><div class='line'></div>
+
+											<div class="mui-input-row"><label style="width:13%">&nbsp</label>
+												<label style="width:37%;float:left">游客登录加代理ID：
+												<input type="checkbox" name="IsAddAgent"  value="1" <eq name="data.IsAddAgent" value="1">checked</eq>/>
+												</label >
+												<label style="width:37%;float:left;">IsUseServerAgent ：<input type="checkbox" name="IsUseServerAgent" value="1" <eq name="data.IsUseServerAgent" value="1">checked</eq>/></label><label style="width:13%">&nbsp</label>
+											</div><div class='line'></div>
+
+											<div class="mui-input-row"><label style="width:13%">&nbsp</label>
+												<label style="width:37%;float:left">是否推荐码登录  ：
+												<input type="checkbox" name="IsRecommendCode"  value="1" <eq name="data.IsRecommendCode" value="1">checked</eq>/>
+												</label >
+												<label style="width:37%;float:left;">IsSwitchRecharge ：<input type="checkbox" name="IsSwitchRecharge" value="1" <eq name="data.IsSwitchRecharge" value="1">checked</eq>/></label><label style="width:13%">&nbsp</label>
+											</div><div class='line'></div>
+
+											<div class="mui-input-row"><label style="width:13%">&nbsp</label>
+												<label style="width:37%;float:left">IsShowInClip  ：
+												<input type="checkbox" name="IsShowInClip"  value="1" <eq name="data.IsShowInClip" value="1">checked</eq>/>
+												</label >
+												<label style="width:37%;float:left;">IsCheckSMS ：<input type="checkbox" name="IsCheckSMS" value="1" <eq name="data.IsCheckSMS" value="1">checked</eq>/></label><label style="width:13%">&nbsp</label>
+											</div><div class='line'></div>
+
+											<div class="mui-input-row"><label style="width:13%">&nbsp</label>
+												<label style="width:37%;float:left">IsPhoneRegister  ：
+												<input type="checkbox" name="IsPhoneRegister"  value="1" <eq name="data.IsPhoneRegister" value="1">checked</eq>/>
+												</label >
+											
+											</div>
+											<div class='line'></div>
+											<div class="mui-input-row">
+												<label style="width:30%">WEB地址：</label>
+												<input style="width:70%" type="text" class="mui-input-clear" name="service" value="{$data.service}">
+											</div>
+											<div class='line'></div>
+											<div class="mui-input-row">
+												<label style="width:30%">Web备用地址：</label>
+												<input style="width:70%" placeholder="备用地址存在时，上WEB地址无效" type="text" class="mui-input-clear" name="ipweb" value="{$data.ipweb}">
+											</div>
+											<div class='line'></div>
+											<div class="mui-input-row">
+												<label style="width:30%">服务器地址：</label>
+												<input style="width:70%" type="text" class="mui-input-clear" name="ipadress" value="{$data.ipadress}">
+											</div>
+											<div class='line'></div>
+											<div class="mui-input-row">
+												<label style="width:30%">服务器端口：</label>
+												<input style="width:70%" type="text" class="mui-input-clear" name="ServerPort" value="{$data.ServerPort}">
+											</div>
+											<div class='line'></div><div class="mui-input-row">
+												<label style="width:30%">头像下载地址 ：</label>
+												<input style="width:70%" type="text" class="mui-input-clear" name="headurl" value="{$data.headurl}">
+											</div>
+											<div class='line'></div>
+											<div class="mui-input-row">
+												<label style="width:30%">头像上传地址 ：</label>
+												<input style="width:70%" type="text" class="mui-input-clear" name="headuploadurl" value="{$data.headuploadurl}">
+											</div>
+											<div class='line'></div>
+											<div class="mui-input-row">
+												<label style="width:30%">wechatappid ：</label>
+												<input style="width:70%" type="text" class="mui-input-clear" name="wechatappid" value="{$data.wechatappid}">
+											</div>
+											<div class='line'></div><div class="mui-input-row">
+												<label style="width:30%">wechatappsecret  ：</label>
+												<input style="width:70%" type="text" class="mui-input-clear" name="wechatappsecret" value="{$data.wechatappsecret}">
+											</div>
+											<div class='line'></div><div class="mui-input-row">
+												<label style="width:30%">GuestRemindPanel ：</label>
+												<input style="width:70%" type="text" class="mui-input-clear" name="GuestRemindPanel" value="{$data.GuestRemindPanel}">
+											</div>
+											<div class='line'></div><div class="mui-input-row">
+												<label style="width:30%">LevelLimitGive  ：</label>
+												<input style="width:70%" type="text" class="mui-input-clear" name="LevelLimitGive" value="{$data.LevelLimitGive}">
+											</div>
+											<div class='line'></div><div class="mui-input-row">
+												<label style="width:30%">GiveViewTip  ：</label>
+												<input style="width:70%" type="text" class="mui-input-clear" name="GiveViewTip" value="{$data.GiveViewTip}">
+											</div>
+											<div class='line'></div>
+											<div class="mui-input-row">
+												<label style="width:30%">Desc1  ：</label>
+												<input style="width:70%" type="text" class="mui-input-clear" name="Desc1" value="{$data.Desc1}">
+											</div>
+											<div class='line'></div><div class="mui-input-row">
+												<label style="width:30%">Desc2 ：</label>
+												<input style="width:70%" type="text" class="mui-input-clear" name="Desc2" value="{$data.Desc2}">
+											</div>
+											<div class='line'></div><div class="mui-input-row">
+												<label style="width:30%">Desc3：</label>
+												<input style="width:70%" type="text" class="mui-input-clear" name="Desc3" value="{$data.Desc3}">
+											</div>
+											<div class='line'></div><div class="mui-input-row">
+												<label style="width:30%">Desc4  ：</label>
+												<input style="width:70%" type="text" class="mui-input-clear" name="Desc4" value="{$data.Desc4}">
+											</div>
+											<div class='line'></div><div class="mui-input-row">
+												<label style="width:30%">Desc5  ：</label>
+												<input style="width:70%" type="text" class="mui-input-clear" name="Desc5" value="{$data.Desc5}">
+											</div>
+											<div class='line'></div><div class="mui-input-row">
+												<label style="width:30%">Desc6  ：</label>
+												<input style="width:70%" type="text" class="mui-input-clear" name="Desc6" value="{$data.Desc6}">
+											</div>
+											<div class='line'></div><div class="mui-input-row">
+												<label style="width:30%">Desc7  ：</label>
+												<input style="width:70%" type="text" class="mui-input-clear" name="Desc7" value="{$data.Desc7}">
+											</div>
+											<div class='line'></div>
+											<div class="mui-input-row">
+												<label style="width:30%">Desc8  ：</label>
+												<input style="width:70%" type="text" class="mui-input-clear" name="Desc8" value="{$data.Desc8}">
+											</div>
+											<div class='line'></div></div><div class="mui-input-row">
+												<label style="width:30%">Desc9  ：</label>
+												<input style="width:70%" type="text" class="mui-input-clear" name="Desc9" value="{$data.Desc9}">
+											</div>
+											<div class='line'></div><div class="mui-input-row">
+												<label style="width:30%">Desc10  ：</label>
+												<input style="width:70%" type="text" class="mui-input-clear" name="Desc10" value="{$data.Desc10}">
+											</div>
+											<div class='line'></div>
+											<input type="hidden" name="UIID" value="{$UIID}"/>
+										</div>
+										
+										<div class="mui-input-row" style="height:100px;"></div>
+							</div>
+							</form>	
+						</div>	
+			</div>
+			<div style='height: 50px;text-align: center;border:1px solid #eee;padding: 5px;position:fixed;bottom:0;left:0;width: 100%;background: #fff;z-index: 9999;'>
+				<button type="button" class="mui-btn mui-btn-blue" id="but" style="font-size: 16px;width: 200px;">确&nbsp;&nbsp;&nbsp;&nbsp;定</button>
+			</div>			
+		</div>
+		<!-- off-canvas backdrop -->
+				<div class="mui-off-canvas-backdrop"></div>
+		<!--页面主体-----end-->
+		</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="_Mobile_/js/ajaxupload.js"></script>
+	<script type="text/javascript">
+		mui.init({
+			pullRefresh: {
+				container: '#offCanvasContentScroll',
+				down:{
+					callback:function(){
+						window.location.reload();
+					}
+				}
+			}
+		});
+		//主界面和侧滑菜单界面均支持区域滚动；
+		mui('#offCanvasSideScroll-left').scroll();
+		mui('#offCanvasSideScroll-right').scroll();
+		mui('#offCanvasContentScroll').scroll();
+		$(function(){
+			$('#but').click(function(){
+			    $('#form3').submit();
+			});
+			$('#agentid').change(function(){
+				var id=$(this).val();
+				location.href="__URL__/config/agentid/"+id;
+			});
+
+
+
+
+
+			$('.sel_game').live('click',function(){
+			var flag=$(this).attr('checked');
+			if(flag=='checked'){
+				$(this).parent().parent().find('input[type="checkbox"]').attr('checked','checked');
+			}else{
+				$(this).parent().parent().find('input[type="checkbox"]').attr('checked',false);
+			}
+
+
+
+
+
+
+
+
+
+
+		 });
+			$("#pay_select").change(function(){
+				var selectedValue=$(this).val();
+				if(!selectedValue || selectedValue == "" || selectedValue == null || selectedValue == undefined){
+					$("div").show(); //你选中的div显示
+				}else{
+					$div = $("."+selectedValue);//这就是你选择的div了
+					$div.parent().children("div").hide(); //让其他所有div隐藏
+					$(".pay_type").show(); //你选中的div显示
+					$(".pay_agent").show(); //你选中的div显示
+					$(".tips").show(); //你选中的div显示
+					$div.show(); //你选中的div显示
+
+				}
+			});
+	 
+		});
+		$(function(){
+		   	var fileType = "file",fileNum = "one";
+		  //  imgUpload($('#upico'),$('#pin'),fileType,fileNum)
+		   // imgUpload($('#upico1'),$('#pin1'),fileType,fileNum)
+		});
+		
+		function imgUpload(upBt,pin,fileType,fileNum)
+		{
+			new AjaxUpload(upBt,{   
+		        action: '{:U("uploadfiy")}',
+		        name: 'userfile',   
+		        onSubmit : function(file, ext){
+		            if( fileType == 'pic' ){
+		                if (ext && /^(zip)$/.test(ext)){   
+		                    this.setData({'info': '文件类型为ini、pfx'});
+		                } else {
+		                    alert('请上传ini、pfx文件！');return false;
+		                }
+		            }
+		            if(fileNum == 'one') this.disable();
+		        },
+		        onComplete: function(file, response){
+		            msg = eval( '('+response+')' );
+		            this.enable();
+		            if(msg.status == "0"){
+		                alert( msg.message );return false;
+		            }else{
+		                //img.attr('src',msg.file);
+		                pin.val(msg.file);
+		            }
+		        }   
+		    });
+		}
+	</script>
+
+</html>

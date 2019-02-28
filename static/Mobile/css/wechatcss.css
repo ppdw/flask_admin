@@ -1,0 +1,45 @@
+.tcdialong{
+	width: 100%; height: 100%; background: url("../images/wechat/tcBg.png"); position: fixed; top:0; left: 0; z-index: 999;
+}
+.tcdialong .arrow img{
+	width: 20%; height: auto; position: absolute; top:px; left:80%;
+}
+.tcdialong .explain img{
+	width: 80%; height: auto; position: absolute; top:15%; left:10%;
+} 
+.tcdialong .getBtn img{
+	width: 50%; height: auto; position: absolute; top:30%; left:25%;
+} 
+@media (max-width: 600px){
+	.contact1{ 
+		font-size: 12px;
+	}
+	.contact2{ 
+		font-size: 12px;
+	}
+	.tcdialong .explain img{
+		top:25%;
+	} 
+	.tcdialong .getBtn img{
+		top:50%; 
+	} 
+}
+@media (min-width: 600px){
+	.tcdialong .getBtn img{
+		top:65%; 
+	} 
+}
+@media (max-width: 380px){
+	.contact1{ 
+		font-size: 10px;
+	}
+	.contact2{ 
+		font-size: 10px;
+	}
+	.tcdialong .explain img{
+		top:18%;
+	} 
+	.tcdialong .getBtn img{
+		top:35%; 
+	} 
+}

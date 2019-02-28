@@ -1,0 +1,92 @@
+h1,h2,h3{line-height:20px;color:#222;text-indent:0}
+.text,h1,h2,h3,{line-height:20px}
+#imgdownload,#showMore .showMore,.moreOperator a,.rss-button,.text a,a:link,a:visited,p a{text-decoration:none}*{tap-highlight-color:transparent;-webkit-tap-highlight-color:transparent}
+a:link,a:visited{color:#2b61c0}
+body{background-color:#f6f6f6;margin:0;padding:0;font-family:"黑体"}
+img{border:none}
+h1{font-size:20px}
+h2,h3{font-size:17px}
+
+
+.top{ position:relative; color:#FFFFFF; }
+
+.tubiao{ position:absolute; margin-top:-20%; margin-left:7%; width:93%;}
+
+.wenzi{ width:60%;position:relative; margin-top:-20%;}
+
+.tubiao span{ color:#FFFFFF; margin-left:2%; font-size:2em;}
+.gamecover{ width:19%;}
+.gamedes{ width:79%; margin-left:2%; vertical-align:middle; height:auto;}
+.fl{ float:left;}
+.fr{ float:right}
+
+.gamedes p{ color:#FFFFFF;}
+
+.biaoti{ font-size:2em;}
+
+@media (min-width:200px) and (max-width:320px){
+	span.s-font,p.s-font{
+		font-size:1rem;
+	}
+	span.m-font,p.m-font{
+		font-size:1.4rem;
+	}
+	span.l-font,p.l-font{
+		font-size:1.8rem;
+	}
+	
+}
+@media (min-width:321px) and (max-width:640px){
+	span.s-font,p.s-font{
+		font-size:1.2rem;
+	}
+	span.m-font,p.m-font{
+		font-size:1.6rem;
+	}
+	span.l-font,p.l-font{
+		font-size:2.2rem;
+	}
+}
+@media (min-width:641px){
+	span.s-font,p.s-font{
+		font-size:2.2rem;
+	}
+	span.m-font,p.m-font{
+		font-size:2.5rem;
+	}
+	span.l-font,p.l-font{
+		font-size:3.6rem;
+	}
+}
+
+.shuoming{ 
+	width:100%;
+	padding-bottom:19%;
+}
+.shuoming_01{ background:#FFFFFF;}
+.shuoming_01 ul{ margin:0 ; padding:0px;}
+.shuoming_01 li{
+	list-style-type: none; width:33.3%; text-align:center; float:left; margin:3% 0;
+}
+.shuoming_01 li img{
+	width:40%;
+}
+
+.game_jieshao{ 
+	width:100%;
+	border-top: 1px solid #f0f0f6;
+	background: #f6f6f6;
+	padding:2% 3%;
+}
+
+.game_tupian{ width:100%; background:#FFFFFF; overflow-x: scroll;position: relative; padding: 13px 0 14px; -webkit-overflow-scrolling:touch;}
+.game_tupian ul{ margin:0 ; padding:0px; width:200%; display: -webkit-box;}
+.game_tupian li{list-style-type: none; width:20%;text-align:center; margin-right:1%; margin-left:5px;}
+.game_tupian li:last-child
+{
+    margin-right:5px;
+}
+.game_tupian li img{ margin:0 ; padding:0px;list-style-type: none; width:100%; text-align:center; float:left; margin-top:2%; }
+
+.xiazai{ position:fixed; bottom:0px; margin-left:2px;}
+
