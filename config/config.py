@@ -52,15 +52,16 @@ def create_app():
     app.config['SESSION_KEY_PREFIX'] = 'session:'  # 保存到session中的值的前缀
     # 设置连接的redis数据库 默认连接到本地6379
     app.config['SESSION_TYPE'] = 'redis'
-    app.config['SESSION_PERMANENT'] = True  # 如果设置为True，则关闭浏览器session就失效。
+    app.config['SESSION_PERMANENT'] = True  # 如果设置为False，则关闭浏览器session就失效。
     app.config['SESSION_USE_SIGNER'] = False  # 是否对发送到浏览器上session的cookie值进行加密
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)  # 设置session过期时间
     # 设置远程
     app.config['SESSION_REDIS'] = redis.Redis(host='47.92.247.134', port=5001, password='')
+    # 将session存入redis
     Session(app)
 
     db.init_app(app=app)
     with app.app_context():
         db.create_all()
-        
+
     return app
