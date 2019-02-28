@@ -19,7 +19,6 @@ from controller.user import user_blueprint
 from controller.nav import nav_blueprint
 
 
-
 def create_app():
     BASE_DIR = os.path.dirname(os.path.dirname(__file__))
     static_dir = os.path.join(BASE_DIR, 'static')
