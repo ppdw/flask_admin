@@ -19,6 +19,7 @@ from controller.user import user_blueprint
 from controller.nav import nav_blueprint
 
 
+
 def create_app():
     BASE_DIR = os.path.dirname(os.path.dirname(__file__))
     static_dir = os.path.join(BASE_DIR, 'static')
@@ -48,7 +49,7 @@ def create_app():
     app.config['SESSION_KEY_PREFIX'] = 'session:'  # 保存到session中的值的前缀
     # 设置连接的redis数据库 默认连接到本地6379
     app.config['SESSION_TYPE'] = 'redis'
-    app.config['SESSION_PERMANENT'] = False  # 如果设置为True，则关闭浏览器session就失效。
+    app.config['SESSION_PERMANENT'] = True  # 如果设置为True，则关闭浏览器session就失效。
     app.config['SESSION_USE_SIGNER'] = False  # 是否对发送到浏览器上session的cookie值进行加密
     # 设置远程
     app.config['SESSION_REDIS'] = redis.Redis(host='47.92.247.134', port=5001)

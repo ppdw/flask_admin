@@ -27,7 +27,7 @@ function global:deactivate ([switch]$NonDestructive) {
 
 deactivate -nondestructive
 
-$env:VIRTUAL_ENV="F:\flasktest\venv"
+$env:VIRTUAL_ENV="__VENV_DIR__"
 
 if (! $env:VIRTUAL_ENV_DISABLE_PROMPT) {
     # Set the prompt to include the env name
@@ -35,7 +35,7 @@ if (! $env:VIRTUAL_ENV_DISABLE_PROMPT) {
     function global:_OLD_VIRTUAL_PROMPT {""}
     copy-item function:prompt function:_OLD_VIRTUAL_PROMPT
     function global:prompt {
-        Write-Host -NoNewline -ForegroundColor Green '(venv) '
+        Write-Host -NoNewline -ForegroundColor Green '__VENV_PROMPT__'
         _OLD_VIRTUAL_PROMPT
     }
 }
@@ -48,4 +48,4 @@ if (Test-Path env:PYTHONHOME) {
 
 # Add the venv to the PATH
 copy-item env:PATH env:_OLD_VIRTUAL_PATH
-$env:PATH = "$env:VIRTUAL_ENV\Scripts;$env:PATH"
+$env:PATH = "$env:VIRTUAL_ENV\__VENV_BIN_NAME__;$env:PATH"
