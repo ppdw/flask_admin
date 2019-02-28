@@ -1,7 +1,11 @@
 import os
 import redis
+
+from datetime import timedelta
 from flask import Flask
 from model.test import db
+from flask_session import Session
+
 from controller.admin import admin_blueprint
 from controller.index import index_blueprint
 from controller.agent import agent_blueprint
@@ -50,7 +54,13 @@ def create_app():
     app.config['SESSION_TYPE'] = 'redis'
     app.config['SESSION_PERMANENT'] = True  # 如果设置为True，则关闭浏览器session就失效。
     app.config['SESSION_USE_SIGNER'] = False  # 是否对发送到浏览器上session的cookie值进行加密
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)  # 设置session过期时间
     # 设置远程
-    app.config['SESSION_REDIS'] = redis.Redis(host='47.92.247.134', port=5001)
+    app.config['SESSION_REDIS'] = redis.Redis(host='47.92.247.134', port=5001, password='')
+    Session(app)
+
     db.init_app(app=app)
+    with app.app_context():
+        db.create_all()
+        
     return app
