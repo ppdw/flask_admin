@@ -53,6 +53,10 @@ def act_admin_login():
         if my_pwd == admin_info.UserPwd:
             session['admin_id'] = admin_info.ID
             session['admin_user'] = admin_user
+            admin_info.LastLoginTM = datetime.datetime.now()
+            admin_info.LoginCount = int(admin_info.LoginCount) + 1
+            admin_info.LastLoginIP = request.remote_addr
+            db.session.commit()
             return jsonify({'error': 0, 'info': '登录成功', 'href': '/index/index/'})
         else:
             return jsonify({'error': 1, 'info': '密码错误'})
