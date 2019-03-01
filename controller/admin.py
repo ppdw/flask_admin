@@ -1,10 +1,10 @@
-from flask import Blueprint, redirect, render_template, request, url_for, session, jsonify,json
-from model.test import Admin, db,Adminactionlog
+from flask import Blueprint, redirect, render_template, \
+    request, url_for, session, jsonify, json
+from model.test import Admin, db, Adminactionlog
 from controller import api
 from controller.api import is_login
 from config.permission import Permission
 import datetime, time
-
 
 admin_blueprint = Blueprint('admin', __name__, template_folder='templates', static_folder='static')
 
@@ -20,8 +20,18 @@ def index():
 @admin_blueprint.route('/info/')
 @is_login
 def info():
-    nav_dict = api.init_nav()
-    return render_template('Admin_info.html', nav_dict=nav_dict)
+    if request.method == 'GET':
+        nav_dict = api.init_nav()
+        return render_template('Admin_info.html', nav_dict=nav_dict)
+    if request.method == 'POST':
+        new_password = request.form['reUserPwd']
+        print(new_password)
+        if new_password == '':
+            exit()
+        else:
+            user_id = session.get('admin_id')
+            print(user_id)
+            user_name = Admin.query.filter(ID=user_id).first()
 
 
 # 登陆页面
@@ -44,7 +54,6 @@ def act_admin_login():
             return jsonify({'error': 0, 'info': '登录成功', 'href': '/index'})
         else:
             return jsonify({'error': 1, 'info': '密码错误'})
-
     except:
         return jsonify({'error': 1, 'info': '用户不存在'})
 
@@ -65,7 +74,7 @@ def log():
     keyword = request.args.get("keyword")
     if keyword == None:
         keyword = ''
-    starttime = (datetime.datetime.now()-datetime.timedelta(days=7)).strftime('%Y-%m-%d')
+    starttime = (datetime.datetime.now() - datetime.timedelta(days=7)).strftime('%Y-%m-%d')
     endtime = datetime.datetime.now().strftime('%Y-%m-%d')
     return render_template('Admin_log.html', nav_dict=nav_dict, nav_on=nav_on, starttime=starttime, endtime=endtime,
                            keyword=keyword)
@@ -80,7 +89,7 @@ def ajax_log():
     date_arr = date_picker.split('- ')
     starttime = date_arr[0]
     endtime = date_arr[1]
-    log_info = Adminactionlog.query.order_by(Adminactionlog.InputDate.desc()).paginate(page=page,per_page=15).items
+    log_info = Adminactionlog.query.order_by(Adminactionlog.InputDate.desc()).paginate(page=page, per_page=15).items
     # log_info = Adminactionlog.query.all()
     # for a in log_info:
     #     print(a.ActionContent)
@@ -89,3 +98,13 @@ def ajax_log():
         temp.append(x.to_json())
     return json.dumps(temp)
 
+
+# 获取管理员名称
+@admin_blueprint.context_processor
+def my_context_processor():
+    user_id = session.get('admin_id')
+    if user_id:
+        user = Admin.query.filter(Admin.ID == user_id).first()
+        if user:
+            return {'user': user}
+    return {}
