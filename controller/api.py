@@ -63,7 +63,6 @@ def is_login(func):
             return func(*args, **kwargs)
         else:
             return redirect(url_for('index.login'))
-
     return check_login
 
 

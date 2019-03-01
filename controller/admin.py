@@ -3,8 +3,7 @@ from flask import Blueprint, redirect, render_template, \
 from model.test import Admin, db, Adminactionlog, Agent
 from controller import api
 from controller.api import is_login
-from config.permission import Permission
-import datetime, time
+import datetime
 
 admin_blueprint = Blueprint('admin', __name__, template_folder='templates', static_folder='static')
 
@@ -19,8 +18,10 @@ def index():
 @is_login
 def info():
     if request.method == 'GET':
-        nav_dict = api.init_nav()
-        return render_template('Admin_info.html', nav_dict=nav_dict)
+        admin_id = session.get('admin_id')
+        if admin_id:
+            admin_info = Admin.query.filter(Admin.ID == admin_id).first()
+        return render_template('Admin_info.html',admin_info=admin_info)
     if request.method == 'POST':
         new_password = request.form['reUserPwd']
         print(new_password)
@@ -38,7 +39,7 @@ def info():
             db.session.commit()
             if not user_id:
                 return
-        return jsonify({'error': 0, 'info': '登入成功', 'href': '/info'})
+            return redirect(url_for('index.index'))
 
 
 # 登陆验证
@@ -103,13 +104,8 @@ def ajax_log():
 @admin_blueprint.context_processor
 def my_context_processor():
     try:
-        user_id = session.get('admin_id')
         nav_dict = api.init_nav()
         nav_on = api.last_nav()
-        if user_id:
-            admin_info = Admin.query.filter(Admin.ID == user_id).first()
-            if admin_info:
-                print("蔡总")
-                return {'admin_info': admin_info, 'nav_dict': nav_dict, 'nav_on': nav_on}
+        return {'nav_dict': nav_dict, 'nav_on': nav_on}
     except:
         return redirect(url_for('index.login'))
