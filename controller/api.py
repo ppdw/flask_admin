@@ -39,7 +39,7 @@ def init_nav():
                         if k1 in mypower:
                             print('成功')
                             powerlist[k][k1] = v1
-                print(powerlist)
+                # print(powerlist)
             else:
                 powerlist = ''
         except:  # 查询不到对应的role_id,返回空列表
