@@ -16,6 +16,7 @@ def index():
     return render_template('Admin_index.html', nav_dict=nav_dict, nav_on=nav_on)
 
 
+# 管理员信息
 @admin_blueprint.route('/info/')
 @is_login
 def info():
@@ -34,7 +35,6 @@ def login():
 def act_admin_login():
     admin_user = request.form['admin_user']
     admin_pwd = request.form['admin_pwd']
-    print(admin_pwd)
     try:
         admin_info = Admin.query.filter_by(UserName=admin_user).first()
         my_pwd = api.create_pwd(admin_pwd, api.strtotime(admin_info.RegTime))
