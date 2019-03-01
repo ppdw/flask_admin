@@ -41,10 +41,10 @@ def info():
         return jsonify({'error': 0, 'info': '登入成功', 'href': '/info'})
 
 
-# 登陆页面
-@admin_blueprint.route('/')
-def login():
-    return render_template('Admin_login.html')
+# # 登陆页面
+# @admin_blueprint.route('/')
+# def login():
+#     return render_template('Admin_login.html')
 
 
 # 登陆验证
@@ -58,7 +58,7 @@ def act_admin_login():
         if my_pwd == admin_info.UserPwd:
             session['admin_id'] = admin_info.ID
             session['admin_user'] = admin_user
-            return jsonify({'error': 0, 'info': '登录成功', 'href': '/index'})
+            return jsonify({'error': 0, 'info': '登录成功', 'href': '/index/index/'})
         else:
             return jsonify({'error': 1, 'info': '密码错误'})
     except:
@@ -70,7 +70,7 @@ def act_admin_login():
 def logout():
     session.clear()
     # 跳转到登录页面
-    return redirect(url_for('admin.login'))
+    return redirect(url_for('index.login'))
 
 
 # 管理员日志
@@ -110,12 +110,14 @@ def ajax_log():
 #
 @admin_blueprint.context_processor
 def my_context_processor():
-    user_id = session.get('admin_id')
-    nav_dict = api.init_nav()
-    nav_on = api.last_nav()
-    if user_id:
-        user = Admin.query.filter(Admin.ID == user_id).first()
-        if user:
-            print("蔡总")
-            return {'user': user, 'nav_dict': nav_dict, 'nav_on': nav_on}
-    return ''
+    try:
+        user_id = session.get('admin_id')
+        nav_dict = api.init_nav()
+        nav_on = api.last_nav()
+        if user_id:
+            admin_info = Admin.query.filter(Admin.ID == user_id).first()
+            if admin_info:
+                print("蔡总")
+                return {'admin_info': admin_info, 'nav_dict': nav_dict, 'nav_on': nav_on}
+    except:
+        return redirect(url_for('index.login'))

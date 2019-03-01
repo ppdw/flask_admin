@@ -6,7 +6,7 @@ from model.test import Admin, Role, Agent
 index_blueprint = Blueprint('index', __name__, template_folder='templates', static_folder='static')
 
 
-@index_blueprint.route('/')
+@index_blueprint.route('/index/')
 @is_login
 def index():
     admin_id = session.get('admin_id')
@@ -28,7 +28,6 @@ def index():
             agent_info = Agent.query.filter_by(AgentID=admin_info.AgentID).first()
             agent_name = agent_info.AgentName
     nav_dict = api.init_nav()
-    print(nav_dict)
     return render_template('Index_index.html', admin_info=admin_info, role_name=role_name, user_ip=user_ip,
                            agent_name=agent_name, nav_dict=nav_dict)
 
@@ -36,6 +35,6 @@ def index():
 #     return redirect(url_for('admin.login'))
 
 
-@index_blueprint.route('/test/')
-def test():
-    return render_template('Index_index.html')
+@index_blueprint.route('/')
+def login():
+    return render_template('Admin_login.html')
