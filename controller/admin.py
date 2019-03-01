@@ -84,6 +84,7 @@ def ajax_log():
     # log_info = Adminactionlog.query.all()
     # for a in log_info:
     #     print(a.ActionContent)
+    ##
     temp = []
     for x in log_info:
         temp.append(x.to_json())
