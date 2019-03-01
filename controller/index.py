@@ -10,8 +10,6 @@ index_blueprint = Blueprint('index', __name__, template_folder='templates', stat
 @is_login
 def index():
     admin_id = session.get('admin_id')
-
-    # try:
     admin_info = Admin.query.filter_by(ID=admin_id).first()
     user_ip = request.remote_addr
     if admin_info.RoleID == 0 and admin_info.IsSystem == 1:
@@ -31,10 +29,8 @@ def index():
     return render_template('Index_index.html', admin_info=admin_info, role_name=role_name, user_ip=user_ip,
                            agent_name=agent_name, nav_dict=nav_dict)
 
-# except:
-#     return redirect(url_for('admin.login'))
 
-
+#进入登录页面
 @index_blueprint.route('/')
 def login():
     return render_template('Admin_login.html')

@@ -41,12 +41,6 @@ def info():
         return jsonify({'error': 0, 'info': '登入成功', 'href': '/info'})
 
 
-# # 登陆页面
-# @admin_blueprint.route('/')
-# def login():
-#     return render_template('Admin_login.html')
-
-
 # 登陆验证
 @admin_blueprint.route('/act_admin_login/', methods=['POST'])
 def act_admin_login():
@@ -76,8 +70,6 @@ def logout():
 # 管理员日志
 @admin_blueprint.route('/log/')
 def log():
-    nav_dict = api.init_nav()
-    nav_on = api.last_nav()
     keyword = request.args.get("keyword")
     if keyword == None:
         keyword = ''
