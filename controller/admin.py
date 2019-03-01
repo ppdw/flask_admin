@@ -20,8 +20,8 @@ def info():
     if request.method == 'GET':
         admin_id = session.get('admin_id')
         if admin_id:
-            admin_info = Admin.query.filter(Admin.ID == admin_id).first()
-        return render_template('Admin_info.html',admin_info=admin_info)
+            admin_info = Admin.query.filter(ID=admin_id).first()
+        return render_template('Admin_info.html', admin_info=admin_info)
     if request.method == 'POST':
         new_password = request.form['reUserPwd']
         print(new_password)
@@ -30,7 +30,7 @@ def info():
         else:
             user_id = session.get('admin_id')
             print(user_id)
-            user_name = Admin.query.filter(Admin.ID == user_id).first()
+            user_name = Admin.query.filter(ID=user_id).first()
             ChangeTime = datetime.datetime.now()
             print(ChangeTime)
             my_pwd = api.create_pwd(new_password, api.strtotime(ChangeTime))
