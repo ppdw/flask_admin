@@ -25,21 +25,17 @@ def init_nav():
     admin_info = Admin.query.filter_by(ID=admin_id).first()
     powerlist = defaultdict(lambda: defaultdict(lambda: 0))  # 声明一个二维dict
     if admin_info.IsSystem == 1:
-        # powerlist = Permission.ADMIN_ACTION
         powerlist = Permission.LEFT_NAV
     else:
         admin_role_id = admin_info.RoleID
         try:
             role_info = Role.query.filter_by(RoleID=admin_role_id).first()
-            # all_power = get_all_power()
             if role_info.IsEnable == 1:
                 mypower = role_info.PowerList
                 for k, v in Permission.LEFT_NAV.items():
                     for k1, v1 in v.items():
                         if k1 in mypower:
-                            print('成功')
                             powerlist[k][k1] = v1
-                # print(powerlist)
             else:
                 powerlist = ''
         except:  # 查询不到对应的role_id,返回空列表
@@ -84,6 +80,7 @@ def md5(str):
 
 # 转化linux时间戳
 def strtotime(date):
+    date = date.strftime('%Y-%m-%d %H:%M:%S')
     timeArray = time.strptime(str(date), "%Y-%m-%d %H:%M:%S")
     timeStamp = int(time.mktime(timeArray))
     return timeStamp

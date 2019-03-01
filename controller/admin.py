@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, render_template, \
     request, url_for, session, jsonify, json
-from model.test import Admin, db, Adminactionlog
+from model.test import Admin, db, Adminactionlog, Agent
 from controller import api
 from controller.api import is_login
 from config.permission import Permission
@@ -11,13 +11,11 @@ admin_blueprint = Blueprint('admin', __name__, template_folder='templates', stat
 
 @admin_blueprint.route('/index/')
 def index():
-    nav_dict = api.init_nav()
-    nav_on = api.last_nav()
-    return render_template('Admin_index.html', nav_dict=nav_dict, nav_on=nav_on)
+    return render_template('Admin_index.html')
 
 
 # 管理员信息
-@admin_blueprint.route('/info/')
+@admin_blueprint.route('/info/', methods=['POST', 'GET'])
 @is_login
 def info():
     if request.method == 'GET':
@@ -31,7 +29,16 @@ def info():
         else:
             user_id = session.get('admin_id')
             print(user_id)
-            user_name = Admin.query.filter(ID=user_id).first()
+            user_name = Admin.query.filter(Admin.ID == user_id).first()
+            ChangeTime = datetime.datetime.now()
+            print(ChangeTime)
+            my_pwd = api.create_pwd(new_password, api.strtotime(ChangeTime))
+            user_name.UserPwd = my_pwd
+            user_name.RegTime = ChangeTime
+            db.session.commit()
+            if not user_id:
+                return
+        return jsonify({'error': 0, 'info': '登入成功', 'href': '/info'})
 
 
 # 登陆页面
@@ -76,7 +83,7 @@ def log():
         keyword = ''
     starttime = (datetime.datetime.now() - datetime.timedelta(days=7)).strftime('%Y-%m-%d')
     endtime = datetime.datetime.now().strftime('%Y-%m-%d')
-    return render_template('Admin_log.html', nav_dict=nav_dict, nav_on=nav_on, starttime=starttime, endtime=endtime,
+    return render_template('Admin_log.html', starttime=starttime, endtime=endtime,
                            keyword=keyword)
 
 
@@ -99,12 +106,15 @@ def ajax_log():
     return json.dumps(temp)
 
 
-# 获取管理员名称
+#
 @admin_blueprint.context_processor
 def my_context_processor():
     user_id = session.get('admin_id')
+    nav_dict = api.init_nav()
+    nav_on = api.last_nav()
     if user_id:
         user = Admin.query.filter(Admin.ID == user_id).first()
         if user:
-            return {'user': user}
-    return {}
+            print("蔡总")
+            return {'user': user, 'nav_dict': nav_dict, 'nav_on': nav_on}
+    return ''
