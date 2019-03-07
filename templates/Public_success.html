@@ -5,10 +5,10 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title>系统信息</title>
-		<script src="_Mobile_/js/mui.min.js"></script>
-		<link href="_Mobile_/css/mui.min.css" rel="stylesheet" />
-		<link href="_Mobile_/css/public.css" rel="stylesheet" />
-		<link href="_Mobile_/css/iconfont.css" rel="stylesheet" />
+		<script src="/static/Mobile/js/mui.min.js"></script>
+		<link href="/static/Mobile/css/mui.min.css" rel="stylesheet" />
+		<link href="/static/Mobile/css/public.css" rel="stylesheet" />
+		<link href="/static/Mobile/css/iconfont.css" rel="stylesheet" />
 		<style type="text/css">
 			.mui-slider-indicator {
 				bottom: 4px;
@@ -76,7 +76,7 @@
 					<i class="mui-icon mui-icon-checkmarkempty jump_flag"></i>
 					<h3><?php echo $message;?></h3>
 				</div>
-				<p>系统将在<span id="gobacktime"><?php echo $waitSecond; ?></span>秒后跳转，点此处<a id="href" href="<?php echo $jumpUrl;?>">返回</a></p>
+				<p>系统将在<span id="gobacktime">3</span>秒后跳转，点此处<a id="href" href="{{ jumpurl }}">返回</a></p>
 		</div>
 
 				

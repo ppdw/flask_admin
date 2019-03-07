@@ -55,17 +55,13 @@
                         <input type="number" class="mui-input-clear" value="{{ admin_info.Phone }}" name="Phone"
                                placeholder="请输入您的手机号" id="mobile">
                     </div>
-                        <div class="mui-input-row mui-checkbox" style="height: 45px">
-                            <label>仅分配普通订单权限：</label>
-                            <input type="checkbox" name="IsAllOrder" value="0">
-                        </div>
                     <div class="mui-input-row mui-checkbox" style="height: 45px">
                         <label>是否激活：</label>
-                        <input type="checkbox" name="IsEnable" value="1">
+                        <input type="checkbox" name="IsEnable" value="1" {% if admin_info.IsEnable==1 %}checked="checked"{% endif %}>
                     </div>
                         <div class="mui-input-row mui-checkbox" style="height: 45px">
                             <label style="width: 36%;">超级管理员：</label>
-                            <input style="width: 64%;" type="checkbox" id="sys" name="IsSystem" value="1">
+                            <input style="width: 64%;" type="checkbox" id="sys" name="IsSystem" value="1" {% if admin_info.IsEnable==1 %}checked="checked"{% endif %}>
                         </div>
                     <div class="mui-input-row role_div">
                         <label>代理：</label>

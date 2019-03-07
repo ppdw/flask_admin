@@ -52,6 +52,7 @@ class Admin(db.Model):
         self.AgentID = AgentID
 
 
+
 class Adminactionlog(db.Model):
     __tablename__ = 'adminactionlogs'
 

@@ -39,7 +39,8 @@ def info():
             db.session.commit()
             if not user_id:
                 return
-            return redirect(url_for('index.index'))
+            jumpurl='www.baidu.com'
+            return render_template('Public_success.html', jumpurl=jumpurl)
 
 
 # 登陆验证
