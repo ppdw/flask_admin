@@ -5,8 +5,10 @@ manager_blueprint = Blueprint('manager', __name__, template_folder='templates', 
 
 @manager_blueprint.route('/user/')
 def user():
-    api.checkpower('manager.user')
-    return '1234'
+    if api.checkpower('manager.user'):
+        return '1234'
+    else:
+        return redirect(url_for('index.login'))
 
 @manager_blueprint.route('/frozen_list/')
 def frozen_list():
@@ -14,7 +16,7 @@ def frozen_list():
 
 @manager_blueprint.route('/search/')
 def search():
-    return '1234'
+    return redirect(url_for('index.login'))
 
 @manager_blueprint.route('/gm_list/')
 def gm_list():

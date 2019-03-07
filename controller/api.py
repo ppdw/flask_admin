@@ -28,12 +28,12 @@ def checkpower(power):
                     return True
                 else:
                     print("权限检查error")
-                    return redirect(url_for('index.login'))
+                    return False
             else:
-                return redirect(url_for('index.login'))
+                return False
 
         except:
-            return redirect(url_for('index.login'))
+            return False
 
 
 
