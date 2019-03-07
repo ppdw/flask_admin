@@ -10,7 +10,25 @@ from flask import Blueprint, redirect, render_template, request, url_for, sessio
 
 # 检查权限
 def checkpower(power):
-    return ''
+    admin_id = session.get('admin_id')
+    admin_info = Admin.query.filter_by(ID=admin_id).first()
+    admin_role_id = admin_info.RoleID
+    if admin_info.IsSystem == 1:
+        return True
+    else:
+        admin_role_id = admin_info.RoleID
+        try:
+            role_info = Role.query.filter_by(RoleID=admin_role_id).first()
+            if role_info.IsEnable == 1:
+                mypower = role_info.PowerList
+                print(mypower)
+                return True
+            else:
+                return redirect(url_for('index.login'))
+
+        except:
+            return redirect(url_for('index.login'))
+
 
 
 # 点击记忆
