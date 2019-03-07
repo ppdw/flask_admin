@@ -22,7 +22,13 @@ def checkpower(power):
             if role_info.IsEnable == 1:
                 mypower = role_info.PowerList
                 print(mypower)
-                return True
+                if str(power) in str(mypower):
+                    print("权限检查成功")
+                    print(mypower)
+                    return True
+                else:
+                    print("权限检查error")
+                    return redirect(url_for('index.login'))
             else:
                 return redirect(url_for('index.login'))
 
