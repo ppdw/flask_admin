@@ -39,7 +39,7 @@ def ajax_online_user():
     user_info = api.fpost(cgi_url,data)
     print(user_info)
     temp = []
-    print("刷新")
+    print("刷新1")
     return user_info
 
 
