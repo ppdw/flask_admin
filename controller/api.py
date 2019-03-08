@@ -1,4 +1,4 @@
-import hashlib, time
+import hashlib, time, requests
 from flask import url_for, redirect, session
 from functools import wraps
 from model.test import Admin, Role, db
@@ -12,7 +12,6 @@ from flask import Blueprint, redirect, render_template, request, url_for, sessio
 def checkpower(power):
     admin_id = session.get('admin_id')
     admin_info = Admin.query.filter_by(ID=admin_id).first()
-    admin_role_id = admin_info.RoleID
     if admin_info.IsSystem == 1:
         return True
     else:
@@ -21,20 +20,14 @@ def checkpower(power):
             role_info = Role.query.filter_by(RoleID=admin_role_id).first()
             if role_info.IsEnable == 1:
                 mypower = role_info.PowerList
-                print(mypower)
                 if str(power) in str(mypower):
-                    print("权限检查成功")
-                    print(mypower)
                     return True
                 else:
-                    print("权限检查error")
                     return False
             else:
                 return False
-
         except:
             return False
-
 
 
 # 点击记忆
@@ -87,6 +80,7 @@ def is_login(func):
             return func(*args, **kwargs)
         else:
             return redirect(url_for('index.login'))
+
     return check_login
 
 
@@ -107,3 +101,8 @@ def strtotime(date):
     timeArray = time.strptime(str(date), "%Y-%m-%d %H:%M:%S")
     timeStamp = int(time.mktime(timeArray))
     return timeStamp
+
+
+def fpost(url, data):
+    re = requests.post(url, data=data)
+    return re.text
