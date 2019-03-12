@@ -1,5 +1,9 @@
 import hashlib, time, requests
 import datetime
+import random
+from urllib import parse
+import http.client
+import json
 from flask import url_for, redirect, session
 from functools import wraps
 from model.test import Admin, Role, db, Adminactionlog
@@ -125,3 +129,29 @@ def adminlogs(log_data):
                           PartnerID=admin_info.PartnerID, ConAct=log_data['ConAct'])
     db.session.add(logs)
     db.session.commit()
+
+
+def send_sms(appid, key, mob):
+    url = "106.ihuyi.com"
+    send_url = "http://106.ihuyi.com/webservice/sms.php?method=Submit"
+    num_code = _random(4)
+    content = ''.join(['您的验证码是：', num_code, '。请不要把验证码泄露给其他人。'])
+    # print(content)
+    headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
+    body = parse.urlencode(
+        {'account': appid, 'password': key, 'content': content, 'mobile': mob, 'format': 'json'})
+    conn = http.client.HTTPConnection(url)
+    conn.request(method='POST', url=send_url, headers=headers, body=body)
+    response = conn.getresponse()
+    # print(response.status)
+    response_str = response.read()
+    # print(response_str)
+    json.loads(response_str)  # 将response_str的json格式转换为python格式的字符串
+    conn.close()
+    return response_str
+
+
+def _random(nums):
+    nums = nums
+    code = ''.join(str(i) for i in random.sample(range(0, 9), nums))
+    return code
