@@ -1,7 +1,8 @@
 import hashlib, time, requests
+import datetime
 from flask import url_for, redirect, session
 from functools import wraps
-from model.test import Admin, Role, db
+from model.test import Admin, Role, db, Adminactionlog
 from config.permission import Permission
 from config.public import Public
 from collections import defaultdict
@@ -106,3 +107,21 @@ def strtotime(date):
 def fpost(url, data):
     re = requests.post(url, data=data)
     return re.text
+
+
+def adminlogs(log_data):
+    log_data['ConAct'] = 0
+    if "UserID" not in log_data:
+        log_data['UserID'] = None
+    if "UserName" not in log_data:
+        log_data['UserName'] = None
+    admin_id = session.get('admin_id')
+    admin_info = Admin.query.filter_by(ID=admin_id).first()
+    if str(admin_info.UserName) == 'vipadmin':
+        log_data['ConAct'] = 2
+    logs = Adminactionlog(ID=0, ActionName=log_data['ActionName'], ActionContent=log_data['ActionContent'],
+                          AdminID=admin_id, AdminUser=admin_info.UserName, AdminIP=admin_info.LastLoginIP,
+                          UserName=log_data['UserName'], UserID=log_data['UserID'], InputDate=datetime.datetime.now(),
+                          PartnerID=admin_info.PartnerID, ConAct=log_data['ConAct'])
+    db.session.add(logs)
+    db.session.commit()

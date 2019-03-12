@@ -6,6 +6,7 @@ from controller.api import is_login
 import datetime
 
 admin_blueprint = Blueprint('admin', __name__, template_folder='templates', static_folder='static')
+log_data = {}
 
 
 @admin_blueprint.route('/index/')
@@ -28,18 +29,22 @@ def info():
         if new_password == '':
             exit()
         else:
-            user_id = session.get('admin_id')
-            print(user_id)
-            user_name = Admin.query.filter_by(ID=user_id).first()
+            admin_id = session.get('admin_id')
+            print(admin_id)
+            admin_info = Admin.query.filter_by(ID=admin_id).first()
             ChangeTime = datetime.datetime.now()
             print(ChangeTime)
             my_pwd = api.create_pwd(new_password, api.strtotime(ChangeTime))
-            user_name.UserPwd = my_pwd
-            user_name.RegTime = ChangeTime
+            admin_info.UserPwd = my_pwd
+            admin_info.RegTime = ChangeTime
             db.session.commit()
-            if not user_id:
+            log_data['ActionName'] = '管理员类控制器'
+            log_data['ActionContent'] = '编辑管理员(' + str(admin_info.UserName) + '),管理员ID为' + str(admin_id)
+            # log_data['ConAct'] = 0
+            api.adminlogs(log_data)
+            if not admin_info:
                 return
-            jumpurl='www.baidu.com'
+            jumpurl = 'www.baidu.com'
             return render_template('Public_success.html', jumpurl=jumpurl)
 
 
@@ -50,11 +55,13 @@ def act_admin_login():
     admin_pwd = request.form['admin_pwd']
     try:
         admin_info = Admin.query.filter_by(UserName=admin_user).first()
+        print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@' + str(admin_info.LastLoginTM))
         my_pwd = api.create_pwd(admin_pwd, api.strtotime(admin_info.RegTime))
         if my_pwd == admin_info.UserPwd:
             session['admin_id'] = admin_info.ID
             session['admin_user'] = admin_user
             admin_info.LastLoginTM = datetime.datetime.now()
+            print('###############################' + str(admin_info.LastLoginTM))
             admin_info.LoginCount = int(admin_info.LoginCount) + 1
             admin_info.LastLoginIP = request.remote_addr
             db.session.commit()

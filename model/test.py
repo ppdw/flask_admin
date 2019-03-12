@@ -66,7 +66,7 @@ class Adminactionlog(db.Model):
     UserID = db.Column(db.Text)
     InputDate = db.Column(db.TIMESTAMP, nullable=False)
     PartnerID = db.Column(db.INTEGER, nullable=False, server_default='0')
-    ConAct = db.Column(db.String(50))
+    ConAct = db.Column(db.Integer)
 
     def __init__(self, ID, ActionName, ActionContent, AdminID, AdminUser, AdminIP, UserName, UserID, InputDate,
                  PartnerID, ConAct):

@@ -1,619 +1,757 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<title>游戏监控管理</title>
-		<script src="/static/Mobile/js/mui.min.js"></script>
-		<link href="/static/Mobile/css/mui.min.css" rel="stylesheet" />
-		<link href="/static/Mobile/css/public.css" rel="stylesheet" />
-		<link href="/static/Mobile/css/iconfont.css" rel="stylesheet" />
-		<style type="text/css">
-			.mui-slider-indicator {
-				bottom: 4px;
-				background: #fff;
-			}
-			.item-ul li{line-height: 40px;border-bottom: 1px solid #ccc;}
-			.mui-popover-arrow {
-				display: none;
-			}
-			.mui-popover {
-				top: 30%!important;
-				left: 50%!important;
-				margin-left: -140px;
-				height: 200px;
-			}
-			.Popover-li {
-				line-height: 45px;
-				list-style: none;
-				border-bottom: 1px solid #ddd;
-				margin: 0 10px;
-			}
-			.Popover-li a {
-				width: 100%;
-				height: 100%;
-				display: inline-block;
-			}
-			/*弹出框样式*/
-			.mui-grid-view.mui-grid-9 .mui-media .mui-icon{font-size: 2.2rem;}
-			.mui-grid-view.mui-grid-9 .mui-teable-view-cell.mui-active{
-				background: #fff;
-				color:#007AFF;
-				border: 1px solid #007AFF;
-				border-radius: 5px;
-			}
-			.mui-grid-view.mui-grid-9 .mui-teable-view-cell.mui-active a .mui-media-body{color:#007AFF}
-			.mui-pull-bottom-pocket, .mui-pull-top-pocket{
-				visibility: visible;
-			}
-			.mui-search .mui-placeholder{width: 80%;text-align: left;padding-left: 5px;}
-			select{display: inline-block;width:49%;padding: 5px;margin:5px 0;border:1px solid #ccc!important;border-radius: 5px;height: 33px!important;}
-			.item1-table td{padding: 5px 20px!important;}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>游戏监控管理</title>
+    <script src="/static/Mobile/js/mui.min.js"></script>
+    <link href="/static/Mobile/css/mui.min.css" rel="stylesheet"/>
+    <link href="/static/Mobile/css/public.css" rel="stylesheet"/>
+    <link href="/static/Mobile/css/iconfont.css" rel="stylesheet"/>
+    <style type="text/css">
+        .mui-slider-indicator {
+            bottom: 4px;
+            background: #fff;
+        }
 
-			.mui-checkbox{width: 49%;display: inline-block;}
-			.mui-checkbox label{text-align: left;}
-			.sel_box{border-bottom: 1px dashed #ccc;padding-left: 10px;margin-bottom: 10px;}
-			.color0{color: red;}
-			.color2{color: green;}
-		</style>
-	</head>
-	<body class='mui-fullscreen'>
-		<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable">
-			{% include 'Public_nav.html' %}<!--左侧滑菜单部分-->
-			<div class="mui-inner-wrap"><!--主界面部分-->
-				<header class="mui-bar mui-bar-nav">
-					<h1 class="mui-title">
-						<a  class="mui-icon mui-icon-home mui-pull-center" 	 	 href="{:U('Manager/user')}" ></a>游戏监控管理
-					</h1>
-					<a  class="mui-icon mui-icon-bars 	  mui-pull-left" 		 href="#offCanvasSide-left"></a>
-					<a  class="mui-icon mui-icon-contact  mui-pull-left_middle"  href="{:U('Admin/info',array('id'=>$admin_id))}" ></a>
-					<a  class="mui-icon mui-icon-undo mui-action-back mui-pull-rignt_middle" href="javascript:history.back(-1)" ></a>
-					<a  class="mui-icon mui-icon-upload   mui-pull-right" 		 href="{:U('Admin/logout')}" ></a>
-				</header>
-				<div style="padding: 2px 2px 0 2px;border-bottom: 1px solid #ccc;position:absolute;top:44px;left:0;z-index: 4;"><!--滑动导航栏-->
-					<div id="segmentedControl" class="mui-segmented-control mui-segmented-control-inverted mui-segmented-control-primary">
-						<a class="mui-control-item mui-active" href="{:U('Manager/user')}">用户在线状态  (共<span id="usernum"></span>人)</a>
-						<a class="mui-control-item" href="{:U('Manager/index')}">在线人数</a>
-						<!--<a class="mui-control-item " href="{:U('Manager/warning')}">在线预警</a>-->
-					</div>
-				</div>
-				<form action="" style="position:absolute;top:87px;left:0;z-index: 4;width:100%;" method="post" id="form1">
-					<div class="mui-input-row  mui-search" id="sel_btn" style="border-radius:4px;text-align:center;width:25%;background:#fff;position:absolute;top:4px;left:2px;height:37px;line-height:37px;border:1px solid #ccc;">
-						<span>筛选</span>
-						<span class="mui-icon mui-icon-arrowup" style="font-size:14px;padding-right:5px;"></span>
-					</div>
-				    <div class="mui-input-row  mui-search" style="width:32%;position: absolute;top:0;left:26%;"><!--用户搜索-->
-						<input type="search" class="mui-input-clear" placeholder="搜索用户ID" id="userid" name="userid" value="<gt name='userid' value='0'>{$userid}</gt>" style="margin: 5px 0;">
-					</div>
-					<div class="mui-input-row  mui-search" style="width:19%;position: absolute;top:0;left:59%;" id="page_box"><!--页码选择-->
-						<input type="search" class="mui-input-clear"  id="page" name="page" value="<gt name='page' value='1'>{$page}</gt>"  style="margin:5px 0;"/>
-					</div>
-				    <button class="mui-btn mui-btn-blue" style="margin-top:4px;width:20%;float:right;margin-bottom:10px;padding:6px 0;text-align:center;" id="refresh_btn">手动刷新</button>
-				    <input type="hidden" id="gid" name="gameid" value="{$gameid}">
-				    <input type="hidden" name="agentid" id="agentid" value="{$agentid}" />
-				    <input type="hidden" name="usertype" id="usertype" value="{$usertype}" />
-				    <input type="hidden" name="sorttype" id="sorttype" value="{$sorttype}" />
-				    <input type="hidden" name="refreshtype" id="refreshtype" value="{$refreshtype}" />
-				</form>
-				<div id="pullrefresh" class="mui-content mui-scroll-wrapper" style="overflow-y:scroll;"><!--主体内容-->
-					<div class="mui-scroll" style="margin-top: 90px;">
-						<div class="mui-slider " style='z-index: 90;'>
-							<div id="sliderSegmentedControl"  class="mui-content mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
-								<table class='item1-table' id="item1-table" style="white-space: nowrap;width: 100%;">
-									<thead>
-										<tr style='height: 40px;border:1px solid #ccc;z-index: 99;' class='mui-slider-handle'>
-											<th>状态</th>
-											<th>代理</th>
-											<th>用户</th>
-											<th>总充值</th>
-											<th colspan="2">赢+ , 输- /单笔</th>
-											<th>单笔最大输赢值</th>
-											<th colspan="2">身上 银行 / 游戏币</th>
-											<th title="游戏名 - 房间ID - 桌子ID">游戏</th>
-											<th>总输赢</th>
-											<th>总库存</th>
-											<th title="库存弹头数量">青,白,黄</th>
-											<th title="等级">vip</th>
-											<th>注册时间</th>
-											<th>页码</th>
-										</tr>
-									</thead>
-									<tbody></tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-					<!--<div style='height: 50px;text-align: center;border:1px solid #eee;padding: 5px;position:fixed;bottom:0;left:0;width: 100%;background: #fff;z-index: 9999;'>-->
-						<!--<button type="button" class="mui-btn mui-btn-blue" id="sub_but" style="font-size: 16px;width: 200px;">GM&nbsp;所&nbsp;选</button>-->
-					<!--</div>-->
-				</div><!-- off-canvas backdrop -->
-				<div class="mui-off-canvas-backdrop"></div><!--页面主体-----end-->
-			</div>
-		</div>
-		<!--弹出框-->
-		<div id="middlePopover" class="mui-popover" style="height: 380px;margin-top: -130px;">
-			<div class="mui-popover-arrow" style='width:0!important;height: 0!important;display:none;'></div>
-			<div class="mui-scroll-wrapper" style="margin:0;" id="scroll_box">
-				<div class="mui-scroll">
-					<ul class="Popover-ul" style='text-align: center;padding: 0;margin: 12px 0;'>
-						<li class="Popover-li name_li"><a href="#" style="font-weight:bold;"></a></li>
-						<if condition="in_array('User/gm',$my_power)">
-							<li class="Popover-li gm_li"><a href="#">名单管理</a></li>
-						</if>
-						<if condition="in_array('User/gamebi',$my_power)">
-							<li class="Popover-li add_li"><a href="#">加币</a></li>
-						</if>
-						<if condition="in_array('User/luckstar',$my_power)">
-							<li class="Popover-li luck_li"><a href="#">幸运之星</a></li>
-						</if>
-						<if condition="in_array('User/info',$my_power)">
-							<li class="Popover-li edit_li"><a href="#">查看用户信息</a></li>
-						</if>
-						<if condition="in_array('Data/user_buy_bill',$my_power)">
-							<li class="Popover-li pay_bill"><a href="#">用户消费账单</a></li>
-						</if>
-						<if condition="in_array('Manager/frozen',$my_power)">
-							<li class="Popover-li frozen_li"><a href="#">冻结用户</a></li>
-						</if>
-						<if condition="in_array('User/cardpay',$my_power)">
-							<li class="Popover-li pay_li"><a href="#">点卡充值</a></li>
-						</if>
-						<if condition="in_array('User/downline',$my_power)">
-							<li class="Popover-li down_li"  style="border:none;"><a href="#">强制下线</a></li>
-						</if>
-						<!--<li class="Popover-li frozen_li"><a href="#">游戏结算</a></li>-->
-						<!--<li class="Popover-li charge_record"><a href="#">用户充值记录</a></li>-->
-						<!--<li class="Popover-li send_record"><a href="#">弹头流水</a></li>-->
-						<!--<li class="Popover-li receive_record"><a href="#">用户加币记录</a></li>-->
-					</ul>
-				</div>
-			</div>
-		</div>
-	 	<input type="hidden" id="gameid" value="{$gameid}"/>
-		<input type="hidden" id="roomid" value="{$roomid}" />
-	    <!--添加GM弹框页面-->
-		<div class='phone_bg' style="display: none;" id="clear_box">
-			<div class="info_ct" id="info_scroll" style="width:80%;height:85%;text-align: center;top: 10%!important;margin-left: -40%; margin-top: 0!important;padding: 30px 0 0;"><!--GM页面iframe-->
-				<iframe src="" style="width:100%;height:100%;" id="gmid" name="Sys_Main" frameborder="0" scrolling="no"></iframe>
-					<!--按钮  此处的2个id（conf_btn，clear_btn）与下面的已经冲突，应该已经没有实际用处 暂时保留-->
-					<!--<a href="" style="height:40px ;width:60px ;display: inline-block;background: #fff!important;padding: 0;" id="conf_a"><button class="mui-btn mui-btn-blue" id="conf_btn" style="margin:10px 0 0 0;">确 认</button></a>-->
-					<!--<button class="mui-btn mui-btn-blue" name="" id="clear_btn" style="margin: 10px;">取 消</button>-->
-				<span class="mui-icon mui-icon-close btn_close"></span>
-			</div>
-		</div>
-		<!--游戏选择-->
-		<div class='phone_bg' style="display: none;" id="game_box" style="">
-			<div class="info_ct" id="info_scroll" style="width:80%;height:80%;text-align: left;top: 10%!important;margin-left: -40%; margin-top: 0!important;padding: 30px 0 0;position: relative;overflow-y: scroll;">
-				<div class="sel_box">
-					<p>平台选择：</p>
-					<select class="data_select" id="agentid2" style="width:70%">
-						<volist name="agent_list" id="AgentName">
-							<option value="{$key}" <eq name="agentid" value="$key">selected="selected"</eq>>
-								{$AgentName}
-							</option>
-						</volist>
-					</select>
-				</div>
-				<div class="sel_box">
-					<p>用户选择：</p>
-					<select id="usertype2">
-						<option value="2" <eq name="usertype" value="2">selected="selected"</eq>>普通用户</option>
-						<option value="0" <eq name="usertype" value="0">selected="selected"</eq>>所有用户</option>
-						<option value="1" <eq name="usertype" value="1">selected="selected"</eq>>被名单管理用户</option>
-					</select>
-				</div>
-				<div class="sel_box">
-					<p>排序选择：</p>
-					<select  id="sorttype2">
-						<option value="3" <eq name="sorttype" value="3">selected="selected"</eq>>按注册时间由近到远</option>
-						<option value="1" <eq name="sorttype" value="1">selected="selected"</eq>>按游戏币由多到少</option>
-						<option value="2" <eq name="sorttype" value="2">selected="selected"</eq>>按登录时间由近到远</option>
-						<option value="4" <eq name="sorttype" value="4">selected="selected"</eq>>按总输赢由多到少</option>
-						<option value="5" <eq name="sorttype" value="5">selected="selected"</eq>>按vip等级从大到小</option>
-					</select>
-				</div>
-				<div class="sel_box">
-					<p>刷新方式选择：</p>
-					<select name="" style="width:70%;" id="refreshtype2">
-						<option value="0" <eq name="refreshtype" value="0">selected="selected"</eq>>无自动刷新</option>
-						<option value="1" <eq name="refreshtype" value="1">selected="selected"</eq>>自动刷新10s</option>
-						<option value="2" <eq name="refreshtype" value="2">selected="selected"</eq>>自动刷新60s</option>
-						<option value="3" <eq name="refreshtype" value="3">selected="selected"</eq>>自动刷新300s</option>
-					</select>
-				</div>
-				<div class="sel_box">
-					<p>游戏选择：</p>
-					<div class="mui-input-row mui-checkbox mui-left" style="display: block;">
-						<label style='width: 120%;padding-left: 50px;'>全部游戏<input type="checkbox" value="0" name="action[]" id="all_game"></label>
-					</div>
-					<div class="mui-input-row mui-checkbox mui-left">
-						<label style='width: 120%;padding-left: 50px;'>游戏大厅<input type="checkbox" value="-1" name="action[]" class="id_arr" id="game_out"></label>
-					</div>
-					<foreach name="gamelist" item="v" key="j">
-						<div class="mui-input-row mui-checkbox mui-left">
-							<label style='width: 120%;padding-left: 50px;'>{$v.GameName}
-							<input type="checkbox" value="{$v.Gid}" name="action[]" class="id_arr" <eq name="v.selected" value="1">checked="checked"</eq>/></label>
-						</div>
-					</foreach>
-				</div>
-				<div style="height: 50px;width: 1px;"></div>
-				<button class="mui-btn mui-btn-blue" id="conf_btn" style="margin:10px 0 0 0;width: 100px;position: fixed;bottom: 12%;left: 50%;margin-left: -120px;">确 认</button><!--按钮-->
-				<button class="mui-btn mui-btn-grey" id="clear_btn" style="margin:10px 0 0 0;width: 100px;position: fixed;bottom: 12%;left: 50%;">取消</button>
-				<span class="mui-icon mui-icon-close btn_close"></span>
-			</div>
-			<div style="height: 50px;width: 1px;"></div>
-			<!--按钮-->
-			<!--<div style="background: #eee;border-top:1px solid #ccc;">-->
-				<button class="mui-btn mui-btn-blue" id="conf_btn" style="margin:10px 0 0 0;width: 100px;position: fixed;bottom: 12%;left: 50%;margin-left: -120px;">确 认</button>
-				<button class="mui-btn mui-btn-grey" id="clear_btn" style="margin:10px 0 0 0;width: 100px;position: fixed;bottom: 12%;left: 50%;">取消</button>
-			<!--</div>-->
-			<span class="mui-icon mui-icon-close btn_close"></span>
-		</div>
-	</body>
-	<script type="text/javascript">
-		//	mui.init();//主界面和侧滑菜单界面均支持区域滚动；
-		mui('#offCanvasSideScroll-left').scroll();
-		mui('#offCanvasSideScroll-right').scroll();
-		mui('#offCanvasContentScroll').scroll();
-		mui('#pullrefresh').scroll();
-		mui('#info_scroll').scroll();
-		//	表格排序//	new Tablesort(document.getElementById('item1-table'));
-		mui.init({
-			pullRefresh: {
-				container: '#pullrefresh',
-				up: {
-					show: true,
-					contentrefresh: '正在加载...',
-					callback: pullupRefresh
-				},
-				down:{
-					callback:function(){
-						window.location.reload();
-					}
-				}
-			}
-		});
-		//上拉加载具体业务实现
-		var b1=['无','白名单1','白名单2','白名单3','白名单4','白名单5'];
-		var b2=['无','黑名单1','黑名单2','黑名单3','黑名单4','黑名单5'];
-		var status_change=function(a,b){
-			var a=Number(a);
-			var b;
-			if(a>0){
-				var b=b1[a];
-			}else{
-				var a=-a;
-				var b=b2[a];
-			}
-			return b;
-		};
-		//page取值
-		if($('#page').val()==''){
-			var page=1;var page2=1;
-		}else{
-			var page=$('#page').val();
-			var page2=$('#page').val();
-		}
-		var refreshtype=$('#refreshtype').val();
-		var gid=$('#gid').val();
-		var p=page,p2=page2;
-		var agentid=$('#agentid2').val();
-		var two_agent=$('#two_agent').val();
-		var usertype=$('#usertype').val();
-		var sorttype=$('#sorttype').val();
-		var userid=$('#userid').val();
-		var roomid=$('#roomid').val();
-		//点击确定传数据给form
-		$('#conf_btn').live('tap',function(){
-			var id_arr=$('.id_arr');
-			var game_arr=[];
-			for(i=0;i<id_arr.length;i++){
-				if(id_arr[i].checked==true){
-					game_arr.push(id_arr[i].value)
-				}
-			}
-			var agentid_arr=$("#agentid2").val();
-			var usertype_arr=$("#usertype2").val();
-			var sorttype_arr=$("#sorttype2").val();
-			var refreshtype_arr=$("#refreshtype2").val();
-			$('#agentid').val(agentid_arr);
-			$('#usertype').val(usertype_arr);
-			$('#sorttype').val(sorttype_arr);
-			$('#refreshtype').val(refreshtype_arr);
-			if($('#all_game').is(':checked')){
-				$('#gid').val(0);//弹出层游戏筛选，选中全部传特定参数值	18-4-26
-			}else{
-				$('#gid').val(game_arr);
-				var gid=$('#gid').val();
-			}
-			$('#form1').submit();
-		});
-		//游戏选中为全部游戏是，大厅和全部游戏被选中
-		var game_value=gid.split(',');
-		var game_arr1=[];
-		for(var i in game_value){
-			game_arr1.push(game_value[i])
-		}
-		if( $.inArray("0", game_arr1)!=-1){
-			$('#all_game').attr('checked',true);
-			var gid=null;
-		}
-		if( $.inArray("-1", game_arr1)!=-1){
-			$('#game_out').attr('checked',true);
-		}
-		//全部游戏选中时全选
-		$('#all_game').change(function(){
-			if($('#all_game').is(':checked')){
-				$('.id_arr').attr('checked',true);
-			}
-		}).trigger('change');
-		$('#all_game').live('click',function(){
-			if($('#all_game').is(':checked')){
-				$('.id_arr').attr('checked',true);
-			}else{
-				$('.id_arr').attr('checked',false);
-			}
-		});
-		//当所有的复选框被选中时，全选按钮被选中，当其中任意一个或者多个没被选中时，全选按钮不被选中
-		function funSelOne(){
-			var one=document.getElementsByClassName ("id_arr");
-			var all=document.getElementById ("all_game");
-			var selCount=0;
-			var unSelCount=0;
-			for(var i=0;i<one.length;i++){
-			 	if(one[i].checked==true){
-			  		selCount++;
-			 	}
-			 	if(one[i].checked==false){
-			 		 unSelCount++;
-			 	}
-			 	if(selCount==one.length){
-			  		all.checked=true;
-			 	}
-			 	if(unSelCount>0){
-			 	 	all.checked=false;
-			 	}
-			}
-		}
-		funSelOne();
-		$('.id_arr').live('click',function(){
-			funSelOne();
-		});
-		var pp=0;
-		var gameid2=$('#gameid').val();
-		function pullupRefresh() {
-			var pages=p-1;
-			var size=25;
-			var totals=p*size;	//	$('tbody').html('')
-			$.get("{{ url_for('manager.ajax_online_user') }}",{gameid:0,gameids:gid,agentid:agentid,two_agent:two_agent,p:page,usertype:usertype,sorttype:sorttype,userid:userid,refreshtype:refreshtype,roomid:roomid,gameid2:gameid2},function(list){
-				var total=list.total;
-				$('#usernum').text(total);
-				var data=list.data;
-				var page_total=Math.ceil(total/25);
-				var pps=pp-1;
-				$('#page_box .mui-placeholder span:not(.mui-icon-search)').text("页码搜索/共"+page_total+"页");
-				if(data){
-					var html='';
-					for (var i = 0; i<data.length; i++){
-						var top	= ($('#page').val()=='')   ? (32*i+42+pages*size*32) : (32*i+42+pps*size*32) ;
-						//	desk 	= (data[i]['desk']==32766) ? '未坐下' : parseInt(data[i]['desk'])+1 ;
-						var game= data[i]['gamename'];
-						if(data[i]['room']!=0){
-							game = data[i]['gamename'] + '-' + data[i]['roomname'];
-						}
-						//*获取 身上游戏币 显示变化数据*//
-						var money_up 	= parseInt(data[i]['moneyUp'],10);
-						var money_down 	= parseInt(data[i]['moneyDown'],10);
-						var max_win 	= parseInt(data[i]['maxwin'],10);
-						var game_bi 	= parseInt(data[i]['gamebi'],10);
-						var bank_gamebi = parseInt(data[i]['bankgamebi'],10);
-						var money_up_td	  = money_up==0? ('<td title="单笔赢值" style="border-right:none;">0</td>') : ('<td title="单笔赢值" style="border-right:none;color:green;">+'+money_up+'</td>');
-						var money_down_td = money_down==0? ('<td title="单笔输值">0</td>') : ('<td title="单笔输值" style="color:red;">-'+money_down+'</td>');
-						var str='<tr style="height:32px;border:1px solid #ccc" class="tr'+data[i]['uid']+'" name="'+data[i]['uid']+'" data-name="'+data[i]['nickname']+'">' +
-								'<td class="color'+data[i]['analysisgm']+'">' +status_change(data[i]['gmlevel'])+'</td>' +
-								'<td>' + data[i]['agentname'] + '</td>' +
-								'<td>' + data[i]['nickname']+ ' [ '+data[i]['uid'] +' ]</td>' +
-								'<td>' + data[i]['rechargetotal'] + '</td>' +
-								money_up_td+
-								money_down_td+
-								'<td title="最大输赢值">'+ (max_win==0?0:max_win)+'</td>'+
-								'<td title="余额" style="border-right:none;">'+(game_bi==0?0:game_bi)+'</td>' +
-								'<td title="银行余额">' + (bank_gamebi==0?0:bank_gamebi)+'</td>'+
-								'<td>' + game +'</td>'+
-								'<td>' + data[i]['allwinlost'] + '</td>' +
-								'<td>' + data[i]['totalstock'] + '</td>' +
-								'<td>' + data[i]['copperbullet']+','+data[i]['silverbullet']+','+data[i]['goldbullet'] +'</td>'+
-								'<td>' + data[i]['viplevel']+ '</td>'+
-								'<td>' + data[i]['registertime']  + '</td>'+
-								'<td>' +(pages+1)+'<a href="#middlePopover" style="position:absolute;top:'+top+'px;left:0;width: 100%;height: 32px;" id="tr-a('+i+')"></a></td></tr>';
-							html+=str;//table.appendChild(s)//下拉刷新，新纪录插到最后面；
-					}
-					$('.item1-table tbody').append(html);
-				}
-				mui('#pullrefresh').pullRefresh().endPullupToRefresh(); //参数为true代表没有更多数据了。totals>total||totals==total
-			}, "json");
-			page++;
-			p++;
-			if($('#page').val()!==''){
-				pp++;
-			}
-		}
-		//自动刷新函数
-		var pp2=0;
-		function fun2() {
-			if($('#page').val()==''){
-				page=page2+1;
-				p=page;
-			}else{
-				page=Number($('#page').val())+1;
-				p=page;
-			}
-			var pages2=p2-1;
-			var size=25;
-			var totals2=p2*size;//$('tbody').html('');
-			$.post("{{ url_for('manager.ajax_online_user') }}",{gameid:0,gameids:gid,agentid:agentid,two_agent:two_agent,p:page2,usertype:usertype,sorttype:sorttype,userid:userid,refreshtype:refreshtype,roomid:roomid,gameid2:gameid2},function(list2){
-				var total=list2.total;
-				var data=list2.data;
-				var page_total=Math.ceil(total/25);
-				var pps2=pp2-1;
-				$('#page_box .mui-placeholder span:not(.mui-icon-search)').text("页码搜索/共"+page_total+"页");
-				if(data){
-					var html='';
-					for (var i = 0; i<data.length; i++) {
-						var top	= ($('#page').val()=='')   ? (32*i+42+pages2*size*32) : (32*i+42+pps2*size*32) ;
-						desk 	= (data[i]['desk']==32766) ? '未坐下' : parseInt(data[i]['desk'])+1 ;
-						var game= data[i]['gamename'];
-						if(data[i]['room']!=0||data[i]['desk']!=0){
-							game = data[i]['gamename'] +'-'+ data[i]['roomname'] +'-'+ desk ;
-						}
-						var str='<tr style="height: auto;border:1px solid #ccc" class="tr'+data[i]['uid']+'" name="'+data[i]['uid']+'" data-name="'+data[i]['nickname']+'">' +
-								'<td class="color'+data[i]['analysisgm']+'">' +status_change(data[i]['gmlevel'])+'</td>' +
-								'<td>' + data[i]['agentname'] + '</td>' +
-								'<td>' + data[i]['nickname']+ '('+data[i]['uid'] +')</td>' +
-								'<td>' + data[i]['totalrecharge'] + '</td>' +
-								'<td>' + data[i]['money_up_down'] + '</td>' +
-								'<td>' + data[i]['maxwin'] + '</td>' +
-								'<td>' + parseInt(data[i]['gamebi'])+','+ parseInt(data[i]['bankgamebi']) + '</td>'+
-								'<td>' + game +'</td>'+
-								'<td>' + data[i]['allwinlost'] + '</td>' +
-								'<td>' + data[i]['totalstock'] + '</td>' +
-								'<td>' + data[i]['copperbullet']+','+data[i]['silverbullet']+','+data[i]['goldbullet'] +'</td>'+
-								'<td>' + data[i]['viplevel']+ '</td>'+
-								'<td>' + data[i]['registertime']  + '</td>'+
-								'<td>' +(pages2+1)+'<a href="#middlePopover" style="position:absolute;top:'+top+'px;left:0;width: 100%;height: 32px;" id="tr-a('+i+')"></a></td></tr>';
-						html+=str;							//table.appendChild(s)//下拉刷新，新纪录插到最后面；
-					}
-					$('.item1-table tbody').append(html);
-				}
-				mui('#pullrefresh').pullRefresh().endPullupToRefresh(); //参数为true代表没有更多数据了。totals2>total||totals2==total
-			}, "json");		//	page++;		//	p++;
-			if($('#page').val()!==''){
-				pp2++;
-			}
-		}
-		//自动刷新时间间隔
-		var timer=null;
-		if(refreshtype==1){
-			clearInterval(timer)
-			var timer=setInterval('fun2()',10000);
-		}else if(refreshtype==2){
-			clearInterval(timer)
-			var timer=setInterval('fun2()',30000);
-		}else if(refreshtype==3){
-			clearInterval(timer)
-			var timer=setInterval('fun2()',600000);
-		}
-		//预加载
-			if (mui.os.plus) {
-				mui.plusReady(function() {
-					setTimeout(function() {
-						mui('#pullrefresh').pullRefresh().pullupLoading();
-					}, 1000);
-				});
-			} else {
-				mui.ready(function() {
-					mui('#pullrefresh').pullRefresh().pullupLoading();
-				});
-			}
-		var openN=function(a,b){
-			a.live('click',function(){
-				$('#clear_box').fadeIn(500);
-				$('#middlePopover').fadeOut(500);
-				$('.mui-backdrop').fadeOut(500);
-				$('#gmid').attr('src',b)
-			})
-		};
-		mui('.item1-table').on('tap', 'tr', sethref);
-		function sethref() {
-			var aa = this.getAttribute('name');
-	 	 	var name=this.getAttribute('data-name');
-			var bb = 1;
-	 	 	$('.name_li').find('a').text('用户：'+name);
+        .item-ul li {
+            line-height: 40px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .mui-popover-arrow {
+            display: none;
+        }
+
+        .mui-popover {
+            top: 30% !important;
+            left: 50% !important;
+            margin-left: -140px;
+            height: 200px;
+        }
+
+        .Popover-li {
+            line-height: 45px;
+            list-style: none;
+            border-bottom: 1px solid #ddd;
+            margin: 0 10px;
+        }
+
+        .Popover-li a {
+            width: 100%;
+            height: 100%;
+            display: inline-block;
+        }
+
+        /*弹出框样式*/
+        .mui-grid-view.mui-grid-9 .mui-media .mui-icon {
+            font-size: 2.2rem;
+        }
+
+        .mui-grid-view.mui-grid-9 .mui-teable-view-cell.mui-active {
+            background: #fff;
+            color: #007AFF;
+            border: 1px solid #007AFF;
+            border-radius: 5px;
+        }
+
+        .mui-grid-view.mui-grid-9 .mui-teable-view-cell.mui-active a .mui-media-body {
+            color: #007AFF
+        }
+
+        .mui-pull-bottom-pocket, .mui-pull-top-pocket {
+            visibility: visible;
+        }
+
+        .mui-search .mui-placeholder {
+            width: 80%;
+            text-align: left;
+            padding-left: 5px;
+        }
+
+        select {
+            display: inline-block;
+            width: 49%;
+            padding: 5px;
+            margin: 5px 0;
+            border: 1px solid #ccc !important;
+            border-radius: 5px;
+            height: 33px !important;
+        }
+
+        .item1-table td {
+            padding: 5px 20px !important;
+        }
+
+        .mui-checkbox {
+            width: 49%;
+            display: inline-block;
+        }
+
+        .mui-checkbox label {
+            text-align: left;
+        }
+
+        .sel_box {
+            border-bottom: 1px dashed #ccc;
+            padding-left: 10px;
+            margin-bottom: 10px;
+        }
+
+        .color0 {
+            color: red;
+        }
+
+        .color2 {
+            color: green;
+        }
+    </style>
+</head>
+<body class='mui-fullscreen'>
+<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable">
+    {% include 'Public_nav.html' %}<!--左侧滑菜单部分-->
+    <div class="mui-inner-wrap"><!--主界面部分-->
+        <header class="mui-bar mui-bar-nav">
+            <h1 class="mui-title">
+                <a class="mui-icon mui-icon-home mui-pull-center" href="{:U('Manager/user')}"></a>游戏监控管理
+            </h1>
+            <a class="mui-icon mui-icon-bars 	  mui-pull-left" href="#offCanvasSide-left"></a>
+            <a class="mui-icon mui-icon-contact  mui-pull-left_middle"
+               href="{:U('Admin/info',array('id'=>$admin_id))}"></a>
+            <a class="mui-icon mui-icon-undo mui-action-back mui-pull-rignt_middle"
+               href="javascript:history.back(-1)"></a>
+            <a class="mui-icon mui-icon-upload   mui-pull-right" href="{:U('Admin/logout')}"></a>
+        </header>
+        <div style="padding: 2px 2px 0 2px;border-bottom: 1px solid #ccc;position:absolute;top:44px;left:0;z-index: 4;">
+            <!--滑动导航栏-->
+            <div id="segmentedControl"
+                 class="mui-segmented-control mui-segmented-control-inverted mui-segmented-control-primary">
+                <a class="mui-control-item mui-active" href="{:U('Manager/user')}">用户在线状态 (共<span id="usernum"></span>人)</a>
+                <a class="mui-control-item" href="{:U('Manager/index')}">在线人数</a>
+                <!--<a class="mui-control-item " href="{:U('Manager/warning')}">在线预警</a>-->
+            </div>
+        </div>
+        <form action="" style="position:absolute;top:87px;left:0;z-index: 4;width:100%;" method="post" id="form1">
+            <div class="mui-input-row  mui-search" id="sel_btn"
+                 style="border-radius:4px;text-align:center;width:25%;background:#fff;position:absolute;top:4px;left:2px;height:37px;line-height:37px;border:1px solid #ccc;">
+                <span>筛选</span>
+                <span class="mui-icon mui-icon-arrowup" style="font-size:14px;padding-right:5px;"></span>
+            </div>
+            <div class="mui-input-row  mui-search" style="width:32%;position: absolute;top:0;left:26%;"><!--用户搜索-->
+                <input type="search" class="mui-input-clear" placeholder="搜索用户ID" id="userid" name="userid"
+                       value="<gt name='userid' value='0'>{$userid}</gt>" style="margin: 5px 0;">
+            </div>
+            <div class="mui-input-row  mui-search" style="width:19%;position: absolute;top:0;left:59%;" id="page_box">
+                <!--页码选择-->
+                <input type="search" class="mui-input-clear" id="page" name="page"
+                       value="<gt name='page' value='1'>{$page}</gt>" style="margin:5px 0;"/>
+            </div>
+            <button class="mui-btn mui-btn-blue"
+                    style="margin-top:4px;width:20%;float:right;margin-bottom:10px;padding:6px 0;text-align:center;"
+                    id="refresh_btn">手动刷新
+            </button>
+            <input type="hidden" id="gid" name="gameid" value="{$gameid}">
+            <input type="hidden" name="agentid" id="agentid" value="{$agentid}"/>
+            <input type="hidden" name="usertype" id="usertype" value="{$usertype}"/>
+            <input type="hidden" name="sorttype" id="sorttype" value="{$sorttype}"/>
+            <input type="hidden" name="refreshtype" id="refreshtype" value="{$refreshtype}"/>
+        </form>
+        <div id="pullrefresh" class="mui-content mui-scroll-wrapper" style="overflow-y:scroll;"><!--主体内容-->
+            <div class="mui-scroll" style="margin-top: 90px;">
+                <div class="mui-slider " style='z-index: 90;'>
+                    <div id="sliderSegmentedControl"
+                         class="mui-content mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+                        <table class='item1-table' id="item1-table" style="white-space: nowrap;width: 100%;">
+                            <thead>
+                            <tr style='height: 40px;border:1px solid #ccc;z-index: 99;' class='mui-slider-handle'>
+                                <th>状态</th>
+                                <th>代理</th>
+                                <th>用户</th>
+                                <th>总充值</th>
+                                <th colspan="2">赢+ , 输- /单笔</th>
+                                <th>单笔最大输赢值</th>
+                                <th colspan="2">身上 银行 / 游戏币</th>
+                                <th title="游戏名 - 房间ID - 桌子ID">游戏</th>
+                                <th>总输赢</th>
+                                <th>总库存</th>
+                                <th title="库存弹头数量">青,白,黄</th>
+                                <th title="等级">vip</th>
+                                <th>注册时间</th>
+                                <th>页码</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!--<div style='height: 50px;text-align: center;border:1px solid #eee;padding: 5px;position:fixed;bottom:0;left:0;width: 100%;background: #fff;z-index: 9999;'>-->
+            <!--<button type="button" class="mui-btn mui-btn-blue" id="sub_but" style="font-size: 16px;width: 200px;">GM&nbsp;所&nbsp;选</button>-->
+            <!--</div>-->
+        </div><!-- off-canvas backdrop -->
+        <div class="mui-off-canvas-backdrop"></div><!--页面主体-----end-->
+    </div>
+</div>
+<!--弹出框-->
+<div id="middlePopover" class="mui-popover" style="height: 380px;margin-top: -130px;">
+    <div class="mui-popover-arrow" style='width:0!important;height: 0!important;display:none;'></div>
+    <div class="mui-scroll-wrapper" style="margin:0;" id="scroll_box">
+        <div class="mui-scroll">
+            <ul class="Popover-ul" style='text-align: center;padding: 0;margin: 12px 0;'>
+                <li class="Popover-li name_li"><a href="#" style="font-weight:bold;"></a></li>
+                <if condition="in_array('User/gm',$my_power)">
+                    <li class="Popover-li gm_li"><a href="#">名单管理</a></li>
+                </if>
+                <if condition="in_array('User/gamebi',$my_power)">
+                    <li class="Popover-li add_li"><a href="#">加币</a></li>
+                </if>
+                <if condition="in_array('User/luckstar',$my_power)">
+                    <li class="Popover-li luck_li"><a href="#">幸运之星</a></li>
+                </if>
+                <if condition="in_array('User/info',$my_power)">
+                    <li class="Popover-li edit_li"><a href="#">查看用户信息</a></li>
+                </if>
+                <if condition="in_array('Data/user_buy_bill',$my_power)">
+                    <li class="Popover-li pay_bill"><a href="#">用户消费账单</a></li>
+                </if>
+                <if condition="in_array('Manager/frozen',$my_power)">
+                    <li class="Popover-li frozen_li"><a href="#">冻结用户</a></li>
+                </if>
+                <if condition="in_array('User/cardpay',$my_power)">
+                    <li class="Popover-li pay_li"><a href="#">点卡充值</a></li>
+                </if>
+                <if condition="in_array('User/downline',$my_power)">
+                    <li class="Popover-li down_li" style="border:none;"><a href="#">强制下线</a></li>
+                </if>
+                <!--<li class="Popover-li frozen_li"><a href="#">游戏结算</a></li>-->
+                <!--<li class="Popover-li charge_record"><a href="#">用户充值记录</a></li>-->
+                <!--<li class="Popover-li send_record"><a href="#">弹头流水</a></li>-->
+                <!--<li class="Popover-li receive_record"><a href="#">用户加币记录</a></li>-->
+            </ul>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="gameid" value="{$gameid}"/>
+<input type="hidden" id="roomid" value="{$roomid}"/>
+<!--添加GM弹框页面-->
+<div class='phone_bg' style="display: none;" id="clear_box">
+    <div class="info_ct" id="info_scroll"
+         style="width:80%;height:85%;text-align: center;top: 10%!important;margin-left: -40%; margin-top: 0!important;padding: 30px 0 0;">
+        <!--GM页面iframe-->
+        <iframe src="" style="width:100%;height:100%;" id="gmid" name="Sys_Main" frameborder="0"
+                scrolling="no"></iframe>
+        <!--按钮  此处的2个id（conf_btn，clear_btn）与下面的已经冲突，应该已经没有实际用处 暂时保留-->
+        <!--<a href="" style="height:40px ;width:60px ;display: inline-block;background: #fff!important;padding: 0;" id="conf_a"><button class="mui-btn mui-btn-blue" id="conf_btn" style="margin:10px 0 0 0;">确 认</button></a>-->
+        <!--<button class="mui-btn mui-btn-blue" name="" id="clear_btn" style="margin: 10px;">取 消</button>-->
+        <span class="mui-icon mui-icon-close btn_close"></span>
+    </div>
+</div>
+<!--游戏选择-->
+<div class='phone_bg' style="display: none;" id="game_box" style="">
+    <div class="info_ct" id="info_scroll"
+         style="width:80%;height:80%;text-align: left;top: 10%!important;margin-left: -40%; margin-top: 0!important;padding: 30px 0 0;position: relative;overflow-y: scroll;">
+        <div class="sel_box">
+            <p>平台选择：</p>
+            <select class="data_select" id="agentid2" style="width:70%">
+                <volist name="agent_list" id="AgentName">
+                    <option value="{$key}"
+                    <eq name="agentid" value="$key">selected="selected"</eq>
+                    >
+                    {$AgentName}
+                    </option>
+                </volist>
+            </select>
+        </div>
+        <div class="sel_box">
+            <p>用户选择：</p>
+            <select id="usertype2">
+                <option value="2"
+                <eq name="usertype" value="2">selected="selected"</eq>
+                >普通用户</option>
+                <option value="0"
+                <eq name="usertype" value="0">selected="selected"</eq>
+                >所有用户</option>
+                <option value="1"
+                <eq name="usertype" value="1">selected="selected"</eq>
+                >被名单管理用户</option>
+            </select>
+        </div>
+        <div class="sel_box">
+            <p>排序选择：</p>
+            <select id="sorttype2">
+                <option value="3"
+                <eq name="sorttype" value="3">selected="selected"</eq>
+                >按注册时间由近到远</option>
+                <option value="1"
+                <eq name="sorttype" value="1">selected="selected"</eq>
+                >按游戏币由多到少</option>
+                <option value="2"
+                <eq name="sorttype" value="2">selected="selected"</eq>
+                >按登录时间由近到远</option>
+                <option value="4"
+                <eq name="sorttype" value="4">selected="selected"</eq>
+                >按总输赢由多到少</option>
+                <option value="5"
+                <eq name="sorttype" value="5">selected="selected"</eq>
+                >按vip等级从大到小</option>
+            </select>
+        </div>
+        <div class="sel_box">
+            <p>刷新方式选择：</p>
+            <select name="" style="width:70%;" id="refreshtype2">
+                <option value="0"
+                <eq name="refreshtype" value="0">selected="selected"</eq>
+                >无自动刷新</option>
+                <option value="1"
+                <eq name="refreshtype" value="1">selected="selected"</eq>
+                >自动刷新10s</option>
+                <option value="2"
+                <eq name="refreshtype" value="2">selected="selected"</eq>
+                >自动刷新60s</option>
+                <option value="3"
+                <eq name="refreshtype" value="3">selected="selected"</eq>
+                >自动刷新300s</option>
+            </select>
+        </div>
+        <div class="sel_box">
+            <p>游戏选择：</p>
+            <div class="mui-input-row mui-checkbox mui-left" style="display: block;">
+                <label style='width: 120%;padding-left: 50px;'>全部游戏<input type="checkbox" value="0" name="action[]"
+                                                                          id="all_game"></label>
+            </div>
+            <div class="mui-input-row mui-checkbox mui-left">
+                <label style='width: 120%;padding-left: 50px;'>游戏大厅<input type="checkbox" value="-1" name="action[]"
+                                                                          class="id_arr" id="game_out"></label>
+            </div>
+            <foreach name="gamelist" item="v" key="j">
+                <div class="mui-input-row mui-checkbox mui-left">
+                    <label style='width: 120%;padding-left: 50px;'>{$v.GameName}
+                        <input type="checkbox" value="{$v.Gid}" name="action[]" class="id_arr"
+                        <eq name="v.selected" value="1">checked="checked"</eq>
+                        /></label>
+                </div>
+            </foreach>
+        </div>
+        <div style="height: 50px;width: 1px;"></div>
+        <button class="mui-btn mui-btn-blue" id="conf_btn"
+                style="margin:10px 0 0 0;width: 100px;position: fixed;bottom: 12%;left: 50%;margin-left: -120px;">确 认
+        </button><!--按钮-->
+        <button class="mui-btn mui-btn-grey" id="clear_btn"
+                style="margin:10px 0 0 0;width: 100px;position: fixed;bottom: 12%;left: 50%;">取消
+        </button>
+        <span class="mui-icon mui-icon-close btn_close"></span>
+    </div>
+    <div style="height: 50px;width: 1px;"></div>
+    <!--按钮-->
+    <!--<div style="background: #eee;border-top:1px solid #ccc;">-->
+    <button class="mui-btn mui-btn-blue" id="conf_btn"
+            style="margin:10px 0 0 0;width: 100px;position: fixed;bottom: 12%;left: 50%;margin-left: -120px;">确 认
+    </button>
+    <button class="mui-btn mui-btn-grey" id="clear_btn"
+            style="margin:10px 0 0 0;width: 100px;position: fixed;bottom: 12%;left: 50%;">取消
+    </button>
+    <!--</div>-->
+    <span class="mui-icon mui-icon-close btn_close"></span>
+</div>
+</body>
+<script type="text/javascript">
+    //	mui.init();//主界面和侧滑菜单界面均支持区域滚动；
+    mui('#offCanvasSideScroll-left').scroll();
+    mui('#offCanvasSideScroll-right').scroll();
+    mui('#offCanvasContentScroll').scroll();
+    mui('#pullrefresh').scroll();
+    mui('#info_scroll').scroll();
+    //	表格排序//	new Tablesort(document.getElementById('item1-table'));
+    mui.init({
+        pullRefresh: {
+            container: '#pullrefresh',
+            up: {
+                show: true,
+                contentrefresh: '正在加载...',
+                callback: pullupRefresh
+            },
+            down: {
+                callback: function () {
+                    window.location.reload();
+                }
+            }
+        }
+    });
+    //上拉加载具体业务实现
+    var b1 = ['无', '白名单1', '白名单2', '白名单3', '白名单4', '白名单5'];
+    var b2 = ['无', '黑名单1', '黑名单2', '黑名单3', '黑名单4', '黑名单5'];
+    var status_change = function (a, b) {
+        var a = Number(a);
+        var b;
+        if (a > 0) {
+            var b = b1[a];
+        } else {
+            var a = -a;
+            var b = b2[a];
+        }
+        return b;
+    };
+    //page取值
+    if ($('#page').val() == '') {
+        var page = 1;
+        var page2 = 1;
+    } else {
+        var page = $('#page').val();
+        var page2 = $('#page').val();
+    }
+    var refreshtype = $('#refreshtype').val();
+    var gid = $('#gid').val();
+    var p = page, p2 = page2;
+    var agentid = $('#agentid2').val();
+    var two_agent = $('#two_agent').val();
+    var usertype = $('#usertype').val();
+    var sorttype = $('#sorttype').val();
+    var userid = $('#userid').val();
+    var roomid = $('#roomid').val();
+    //点击确定传数据给form
+    $('#conf_btn').live('tap', function () {
+        var id_arr = $('.id_arr');
+        var game_arr = [];
+        for (i = 0; i < id_arr.length; i++) {
+            if (id_arr[i].checked == true) {
+                game_arr.push(id_arr[i].value)
+            }
+        }
+        var agentid_arr = $("#agentid2").val();
+        var usertype_arr = $("#usertype2").val();
+        var sorttype_arr = $("#sorttype2").val();
+        var refreshtype_arr = $("#refreshtype2").val();
+        $('#agentid').val(agentid_arr);
+        $('#usertype').val(usertype_arr);
+        $('#sorttype').val(sorttype_arr);
+        $('#refreshtype').val(refreshtype_arr);
+        if ($('#all_game').is(':checked')) {
+            $('#gid').val(0);//弹出层游戏筛选，选中全部传特定参数值	18-4-26
+        } else {
+            $('#gid').val(game_arr);
+            var gid = $('#gid').val();
+        }
+        $('#form1').submit();
+    });
+    //游戏选中为全部游戏是，大厅和全部游戏被选中
+    var game_value = gid.split(',');
+    var game_arr1 = [];
+    for (var i in game_value) {
+        game_arr1.push(game_value[i])
+    }
+    if ($.inArray("0", game_arr1) != -1) {
+        $('#all_game').attr('checked', true);
+        var gid = null;
+    }
+    if ($.inArray("-1", game_arr1) != -1) {
+        $('#game_out').attr('checked', true);
+    }
+    //全部游戏选中时全选
+    $('#all_game').change(function () {
+        if ($('#all_game').is(':checked')) {
+            $('.id_arr').attr('checked', true);
+        }
+    }).trigger('change');
+    $('#all_game').live('click', function () {
+        if ($('#all_game').is(':checked')) {
+            $('.id_arr').attr('checked', true);
+        } else {
+            $('.id_arr').attr('checked', false);
+        }
+    });
+
+    //当所有的复选框被选中时，全选按钮被选中，当其中任意一个或者多个没被选中时，全选按钮不被选中
+    function funSelOne() {
+        var one = document.getElementsByClassName("id_arr");
+        var all = document.getElementById("all_game");
+        var selCount = 0;
+        var unSelCount = 0;
+        for (var i = 0; i < one.length; i++) {
+            if (one[i].checked == true) {
+                selCount++;
+            }
+            if (one[i].checked == false) {
+                unSelCount++;
+            }
+            if (selCount == one.length) {
+                all.checked = true;
+            }
+            if (unSelCount > 0) {
+                all.checked = false;
+            }
+        }
+    }
+
+    funSelOne();
+    $('.id_arr').live('click', function () {
+        funSelOne();
+    });
+    var pp = 0;
+    var gameid2 = $('#gameid').val();
+
+    function pullupRefresh() {
+        var pages = p - 1;
+        var size = 25;
+        var totals = p * size;	//	$('tbody').html('')
+        $.get("{{ url_for('manager.ajax_online_user') }}", {
+            gameid: 0,
+            gameids: gid,
+            agentid: agentid,
+            two_agent: two_agent,
+            p: page,
+            usertype: usertype,
+            sorttype: sorttype,
+            userid: userid,
+            refreshtype: refreshtype,
+            roomid: roomid,
+            gameid2: gameid2
+        }, function (list) {
+            var total = list.total;
+            $('#usernum').text(total);
+            var data = list.data;
+            var page_total = Math.ceil(total / 25);
+            var pps = pp - 1;
+            $('#page_box .mui-placeholder span:not(.mui-icon-search)').text("页码搜索/共" + page_total + "页");
+            if (data) {
+                var html = '';
+                for (var i = 0; i < data.length; i++) {
+                    var top = ($('#page').val() == '') ? (32 * i + 42 + pages * size * 32) : (32 * i + 42 + pps * size * 32);
+                    //	desk 	= (data[i]['desk']==32766) ? '未坐下' : parseInt(data[i]['desk'])+1 ;
+                    var game = data[i]['gamename'];
+                    if (data[i]['room'] != 0) {
+                        game = data[i]['gamename'] + '-' + data[i]['roomname'];
+                    }
+                    //*获取 身上游戏币 显示变化数据*//
+                    var money_up = parseInt(data[i]['moneyUp'], 10);
+                    var money_down = parseInt(data[i]['moneyDown'], 10);
+                    var max_win = parseInt(data[i]['maxwin'], 10);
+                    var game_bi = parseInt(data[i]['gamebi'], 10);
+                    var bank_gamebi = parseInt(data[i]['bankgamebi'], 10);
+                    var money_up_td = money_up == 0 ? ('<td title="单笔赢值" style="border-right:none;">0</td>') : ('<td title="单笔赢值" style="border-right:none;color:green;">+' + money_up + '</td>');
+                    var money_down_td = money_down == 0 ? ('<td title="单笔输值">0</td>') : ('<td title="单笔输值" style="color:red;">-' + money_down + '</td>');
+                    var str = '<tr style="height:32px;border:1px solid #ccc" class="tr' + data[i]['uid'] + '" name="' + data[i]['uid'] + '" data-name="' + data[i]['nickname'] + '">' +
+                        '<td class="color' + data[i]['analysisgm'] + '">' + status_change(data[i]['gmlevel']) + '</td>' +
+                        '<td>' + data[i]['agentname'] + '</td>' +
+                        '<td>' + data[i]['nickname'] + ' [ ' + data[i]['uid'] + ' ]</td>' +
+                        '<td>' + data[i]['rechargetotal'] + '</td>' +
+                        money_up_td +
+                        money_down_td +
+                        '<td title="最大输赢值">' + (max_win == 0 ? 0 : max_win) + '</td>' +
+                        '<td title="余额" style="border-right:none;">' + (game_bi == 0 ? 0 : game_bi) + '</td>' +
+                        '<td title="银行余额">' + (bank_gamebi == 0 ? 0 : bank_gamebi) + '</td>' +
+                        '<td>' + game + '</td>' +
+                        '<td>' + data[i]['allwinlost'] + '</td>' +
+                        '<td>' + data[i]['totalstock'] + '</td>' +
+                        '<td>' + data[i]['copperbullet'] + ',' + data[i]['silverbullet'] + ',' + data[i]['goldbullet'] + '</td>' +
+                        '<td>' + data[i]['viplevel'] + '</td>' +
+                        '<td>' + data[i]['registertime'] + '</td>' +
+                        '<td>' + (pages + 1) + '<a href="#middlePopover" style="position:absolute;top:' + top + 'px;left:0;width: 100%;height: 32px;" id="tr-a(' + i + ')"></a></td></tr>';
+                    html += str;//table.appendChild(s)//下拉刷新，新纪录插到最后面；
+                }
+                $('.item1-table tbody').append(html);
+            }
+            mui('#pullrefresh').pullRefresh().endPullupToRefresh(); //参数为true代表没有更多数据了。totals>total||totals==total
+        }, "json");
+        page++;
+        p++;
+        if ($('#page').val() !== '') {
+            pp++;
+        }
+    }
+
+    //自动刷新函数
+    var pp2 = 0;
+
+    function fun2() {
+        if ($('#page').val() == '') {
+            page = page2 + 1;
+            p = page;
+        } else {
+            page = Number($('#page').val()) + 1;
+            p = page;
+        }
+        var pages2 = p2 - 1;
+        var size = 25;
+        var totals2 = p2 * size;//$('tbody').html('');
+        $.post("{{ url_for('manager.ajax_online_user') }}", {
+            gameid: 0,
+            gameids: gid,
+            agentid: agentid,
+            two_agent: two_agent,
+            p: page2,
+            usertype: usertype,
+            sorttype: sorttype,
+            userid: userid,
+            refreshtype: refreshtype,
+            roomid: roomid,
+            gameid2: gameid2
+        }, function (list2) {
+            var total = list2.total;
+            var data = list2.data;
+            var page_total = Math.ceil(total / 25);
+            var pps2 = pp2 - 1;
+            $('#page_box .mui-placeholder span:not(.mui-icon-search)').text("页码搜索/共" + page_total + "页");
+            if (data) {
+                var html = '';
+                for (var i = 0; i < data.length; i++) {
+                    var top = ($('#page').val() == '') ? (32 * i + 42 + pages2 * size * 32) : (32 * i + 42 + pps2 * size * 32);
+                    desk = (data[i]['desk'] == 32766) ? '未坐下' : parseInt(data[i]['desk']) + 1;
+                    var game = data[i]['gamename'];
+                    if (data[i]['room'] != 0 || data[i]['desk'] != 0) {
+                        game = data[i]['gamename'] + '-' + data[i]['roomname'] + '-' + desk;
+                    }
+                    var str = '<tr style="height: auto;border:1px solid #ccc" class="tr' + data[i]['uid'] + '" name="' + data[i]['uid'] + '" data-name="' + data[i]['nickname'] + '">' +
+                        '<td class="color' + data[i]['analysisgm'] + '">' + status_change(data[i]['gmlevel']) + '</td>' +
+                        '<td>' + data[i]['agentname'] + '</td>' +
+                        '<td>' + data[i]['nickname'] + '(' + data[i]['uid'] + ')</td>' +
+                        '<td>' + data[i]['totalrecharge'] + '</td>' +
+                        '<td>' + data[i]['money_up_down'] + '</td>' +
+                        '<td>' + data[i]['maxwin'] + '</td>' +
+                        '<td>' + parseInt(data[i]['gamebi']) + ',' + parseInt(data[i]['bankgamebi']) + '</td>' +
+                        '<td>' + game + '</td>' +
+                        '<td>' + data[i]['allwinlost'] + '</td>' +
+                        '<td>' + data[i]['totalstock'] + '</td>' +
+                        '<td>' + data[i]['copperbullet'] + ',' + data[i]['silverbullet'] + ',' + data[i]['goldbullet'] + '</td>' +
+                        '<td>' + data[i]['viplevel'] + '</td>' +
+                        '<td>' + data[i]['registertime'] + '</td>' +
+                        '<td>' + (pages2 + 1) + '<a href="#middlePopover" style="position:absolute;top:' + top + 'px;left:0;width: 100%;height: 32px;" id="tr-a(' + i + ')"></a></td></tr>';
+                    html += str;							//table.appendChild(s)//下拉刷新，新纪录插到最后面；
+                }
+                $('.item1-table tbody').append(html);
+            }
+            mui('#pullrefresh').pullRefresh().endPullupToRefresh(); //参数为true代表没有更多数据了。totals2>total||totals2==total
+        }, "json");		//	page++;		//	p++;
+        if ($('#page').val() !== '') {
+            pp2++;
+        }
+    }
+
+    //自动刷新时间间隔
+    var timer = null;
+    if (refreshtype == 1) {
+        clearInterval(timer)
+        var timer = setInterval('fun2()', 10000);
+    } else if (refreshtype == 2) {
+        clearInterval(timer)
+        var timer = setInterval('fun2()', 30000);
+    } else if (refreshtype == 3) {
+        clearInterval(timer)
+        var timer = setInterval('fun2()', 600000);
+    }
+    //预加载
+    if (mui.os.plus) {
+        mui.plusReady(function () {
+            setTimeout(function () {
+                mui('#pullrefresh').pullRefresh().pullupLoading();
+            }, 1000);
+        });
+    } else {
+        mui.ready(function () {
+            mui('#pullrefresh').pullRefresh().pullupLoading();
+        });
+    }
+    var openN = function (a, b) {
+        a.live('click', function () {
+            $('#clear_box').fadeIn(500);
+            $('#middlePopover').fadeOut(500);
+            $('.mui-backdrop').fadeOut(500);
+            $('#gmid').attr('src', b)
+        })
+    };
+    mui('.item1-table').on('tap', 'tr', sethref);
+
+    function sethref() {
+        var aa = this.getAttribute('name');
+        var name = this.getAttribute('data-name');
+        var bb = 1;
+        $('.name_li').find('a').text('用户：' + name);
 //			$('.edit_li').find('a').attr('href', "__APP__/User/info/id/" + aa);
 //			openN($('.frozen_li'),"__APP__/Data/user_wealth/id/" + aa+"/type/1/nav_flag/1");//游戏结算
 //			openN($('.charge_record'),"__APP__/Data/user_pay/id/" + aa+"/nav_flag/1");
 //			openN($('.send_record'),"__APP__/Data/user_bullet/id/" + aa+"/nav_flag/1");
 //			openN($('.receive_record'),"__APP__/Data/user_wealth/id/" + aa+"/type/52/nav_flag/1");
-			openN($('.edit_li'),"__APP__/User/info/id/" + aa+"/nav_flag/1");
-			openN($('.frozen_li'),"__APP__/Manager/frozen/id/" + aa+"/nav_flag/1");
-			openN($('.pay_bill'),"__APP__/Data/user_buy_bill/id/" + aa+"/nav_flag/1");
-			openN($('.gm_li'),"__APP__/User/gm/id/" + aa +"/from/" + bb+"/nav_flag/1");
-			openN($('.add_li'),"__APP__/User/gamebi/id/" + aa+"/nav_flag/1");
-			openN($('.down_li'),"__APP__/User/downline/id/" + aa+"/nav_flag/1");
-			openN($('.luck_li'),"__APP__/User/luckstar/id/" + aa+"/nav_flag/1");
-			openN($('.pay_li'),"__APP__/User/cardpay/id/" + aa+"/nav_flag/1");
-		}
-		$('.btn_close').live('tap',function(){
-			$('#clear_box').fadeOut(500);
-			$('#game_box').fadeOut(500);
-		});
-		$('#clear_btn').live('tap',function(){
-			$('#clear_box').fadeOut(500);
-			$('#game_box').fadeOut(500);
-			$('.mui-backdrop').fadeOut(500);
-			$('#middlePopover').removeClass('mui-active');
-		});
-		$('#clear_box').live('tap',function(){
-			$('#clear_box').fadeOut(500);
-			$('.mui-backdrop').fadeOut(500);
-			$('#middlePopover').removeClass('mui-active');
-		});
-		//表单各项值改变时重新提交表单
-		$('#gid').change(function(){
-			var aa=$('#gid').val();
-			var gids=$('#gameid').val();
-			if(gids>0||gids==-1){
-				if(aa==0){
-					$(this).attr('href',"__URL__/user");
-					openCustUR(this.getAttribute('href'))
-				}else{
-					$(this).attr('href',"__URL__/user/gameid/"+aa);
-					openCustUR(this.getAttribute('href'))
-				}
-			}else{
-				$('#form1').submit();
-			}
-		});
-		$('#agentid').change(function(){
-			$('#two_agent').val(0);
-			$("#form1").submit();
-		});
-		$('#two_agent').change(function(){
-			$("#form1").submit();
-		});
-		$('#sorttype').change(function(){
-			$('#form1').submit();
-		});
-		$('#usertype').change(function(){
-			$('#form1').submit();
-		});
-		$('#refreshtype').change(function(){
-			$('#form1').submit();
-		});
-		$('#sel_btn').live('tap',function(){
-			$('#game_box').fadeIn(500);
-			$('#middlePopover').fadeOut(500);
-			$('.mui-backdrop').fadeOut(500);
-		});
-		var fun=function(){
-			$('#form1').submit();
-		};
-		$(function(){
-			var bb = 1;
-			$('#sub_but').click(function(){
-				var str='';
-				$('.check_uid').each(function(){
-					if($(this).attr('checked')=='checked'){
-						str+=$(this).val()+',';
-					}
-				});
-				if(str==''){
-					alert('请先选择要名单管理的用户！');
-					return false;
-				}
-				//console.log(str);
-				location.href='__URL__/gm/id/'+str +"/from/" + bb;
-			});
-		})
-	</script>
+        openN($('.edit_li'), "__APP__/User/info/id/" + aa + "/nav_flag/1");
+        openN($('.frozen_li'), "__APP__/Manager/frozen/id/" + aa + "/nav_flag/1");
+        openN($('.pay_bill'), "__APP__/Data/user_buy_bill/id/" + aa + "/nav_flag/1");
+        openN($('.gm_li'), "__APP__/User/gm/id/" + aa + "/from/" + bb + "/nav_flag/1");
+        openN($('.add_li'), "__APP__/User/gamebi/id/" + aa + "/nav_flag/1");
+        openN($('.down_li'), "__APP__/User/downline/id/" + aa + "/nav_flag/1");
+        openN($('.luck_li'), "__APP__/User/luckstar/id/" + aa + "/nav_flag/1");
+        openN($('.pay_li'), "__APP__/User/cardpay/id/" + aa + "/nav_flag/1");
+    }
+
+    $('.btn_close').live('tap', function () {
+        $('#clear_box').fadeOut(500);
+        $('#game_box').fadeOut(500);
+    });
+    $('#clear_btn').live('tap', function () {
+        $('#clear_box').fadeOut(500);
+        $('#game_box').fadeOut(500);
+        $('.mui-backdrop').fadeOut(500);
+        $('#middlePopover').removeClass('mui-active');
+    });
+    $('#clear_box').live('tap', function () {
+        $('#clear_box').fadeOut(500);
+        $('.mui-backdrop').fadeOut(500);
+        $('#middlePopover').removeClass('mui-active');
+    });
+    //表单各项值改变时重新提交表单
+    $('#gid').change(function () {
+        var aa = $('#gid').val();
+        var gids = $('#gameid').val();
+        if (gids > 0 || gids == -1) {
+            if (aa == 0) {
+                $(this).attr('href', "__URL__/user");
+                openCustUR(this.getAttribute('href'))
+            } else {
+                $(this).attr('href', "__URL__/user/gameid/" + aa);
+                openCustUR(this.getAttribute('href'))
+            }
+        } else {
+            $('#form1').submit();
+        }
+    });
+    $('#agentid').change(function () {
+        $('#two_agent').val(0);
+        $("#form1").submit();
+    });
+    $('#two_agent').change(function () {
+        $("#form1").submit();
+    });
+    $('#sorttype').change(function () {
+        $('#form1').submit();
+    });
+    $('#usertype').change(function () {
+        $('#form1').submit();
+    });
+    $('#refreshtype').change(function () {
+        $('#form1').submit();
+    });
+    $('#sel_btn').live('tap', function () {
+        $('#game_box').fadeIn(500);
+        $('#middlePopover').fadeOut(500);
+        $('.mui-backdrop').fadeOut(500);
+    });
+    var fun = function () {
+        $('#form1').submit();
+    };
+    $(function () {
+        var bb = 1;
+        $('#sub_but').click(function () {
+            var str = '';
+            $('.check_uid').each(function () {
+                if ($(this).attr('checked') == 'checked') {
+                    str += $(this).val() + ',';
+                }
+            });
+            if (str == '') {
+                alert('请先选择要名单管理的用户！');
+                return false;
+            }
+            //console.log(str);
+            location.href = '__URL__/gm/id/' + str + "/from/" + bb;
+        });
+    })
+</script>
 </html>
