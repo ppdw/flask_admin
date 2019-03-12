@@ -145,7 +145,7 @@ def send_sms(appid, key, mob):
     response = conn.getresponse()
     # print(response.status)
     response_str = response.read()
-    # print(response_str)
+    print(response_str)
     json.loads(response_str)  # 将response_str的json格式转换为python格式的字符串
     conn.close()
     return response_str
