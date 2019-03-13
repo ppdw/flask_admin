@@ -57,7 +57,7 @@
 
 		<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable">
 			<!--左侧滑菜单部分-->
-			<include file="Public:nav"/>
+			{% include 'Public_nav.html' %}
 			<!--主界面部分-->
 			<div class="mui-inner-wrap">
 
@@ -74,9 +74,9 @@
 						<div class="jump_bg">
 				<div style="position: relative;">
 					<i class="mui-icon mui-icon-closeempty jump_flag"></i>
-					<h3><?php echo $error;?></h3>
+					<h3>无此权限</h3>
 				</div>
-				<p>系统将在<span id="gobacktime">2</span>秒后跳转，点此处<a id="href" href={{ jumpurl }}>返回</a></p>
+				<p>系统将在<span id="gobacktime">2</span>秒后跳转，点此处<a id="href" href="{{ url_for('index.login') }}">返回</a></p>
 		</div>
 
 				

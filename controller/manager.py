@@ -9,18 +9,15 @@ manager_blueprint = Blueprint('manager', __name__, template_folder='templates', 
 @manager_blueprint.route('/user/')
 def user():
     if api.checkpower('manager.user'):
-        admin_id = session.get('admin_id')
-        admin_info = Admin.query.filter_by(ID=admin_id).first()
-        admin_agentid = admin_info.AgentID
-
-        return render_template('Manager_user.html')
-    else:
-        return redirect(url_for('index.login'))
+        return render_template('Public_error.html')
+    admin_id = session.get('admin_id')
+    admin_info = Admin.query.filter_by(ID=admin_id).first()
+    admin_agentid = admin_info.AgentID
+    return render_template('Manager_user.html')
 
 
 @manager_blueprint.route('/ajax_online_user/')
 def ajax_online_user():
-
     cgi_url = Public.user_cgi + "?method=accountcgi_get_user_online_pinpai_auto"
     print(cgi_url)
     data = {
@@ -36,7 +33,7 @@ def ajax_online_user():
         'time': 1552036733,
         'code': 'aa2ad2acc6247f19e73ba1b64b82307c',
     }
-    user_info = api.fpost(cgi_url,data)
+    user_info = api.fpost(cgi_url, data)
     print(user_info)
     temp = []
     print("刷新1")
@@ -56,6 +53,7 @@ def search():
 @manager_blueprint.route('/gm_list/')
 def gm_list():
     return '1234'
+
 
 @manager_blueprint.context_processor
 def my_context_processor():
