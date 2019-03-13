@@ -52,7 +52,6 @@ class Admin(db.Model):
         self.AgentID = AgentID
 
 
-
 class Adminactionlog(db.Model):
     __tablename__ = 'adminactionlogs'
 
@@ -127,8 +126,10 @@ class Agent(db.Model):
     opennum = db.Column(db.INTEGER, nullable=False, server_default='0')
     PowerList = db.Column(db.Text)
 
-    def __init__(self, AgentName):
+    def __init__(self, AgentName, AgentID, ParentID):
         self.AgentName = AgentName
+        self.AgentID = AgentID
+        self.ParentID = ParentID
 
 
 class Role(db.Model):

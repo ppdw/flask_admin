@@ -6,7 +6,7 @@ import http.client
 import json
 from flask import url_for, redirect, session
 from functools import wraps
-from model.test import Admin, Role, db, Adminactionlog
+from model.test import Admin, Role, db, Adminactionlog, Agent
 from config.permission import Permission
 from config.public import Public
 from collections import defaultdict
@@ -76,6 +76,20 @@ def get_all_power():
     return powerlist
 
 
+# 获取当前管理员/代理所有下级代理 递归
+def get_child_agent(agent_id):
+    all_agent_list = defaultdict(lambda: defaultdict(lambda: 0))
+    lev = 0
+    if agent_id <= 1:
+        all_agent_list['html'][0] = '所有代理'
+        all_agent_list['html'][1] = '平台'
+        all_agent_list[0] = {'Level': 0, 'AgentID': 0, 'AgentName': '所有代理', 'ParentID': None}
+        all_agent_list[1] = {'Level': 0, 'AgentID': 1, 'AgentName': '平台', 'ParentID': None}
+    else:
+        info = Agent.query.filter_by().all
+    pass
+
+
 # 判断是否登陆
 def is_login(func):
     @wraps(func)
@@ -108,11 +122,13 @@ def strtotime(date):
     return timeStamp
 
 
+# post提交
 def fpost(url, data):
     re = requests.post(url, data=data)
     return re.text
 
 
+# 日志写入
 def adminlogs(log_data):
     log_data['ConAct'] = 0
     if "UserID" not in log_data:
@@ -131,6 +147,7 @@ def adminlogs(log_data):
     db.session.commit()
 
 
+# 发送短信
 def send_sms(appid, key, mob):
     url = "106.ihuyi.com"
     send_url = "http://106.ihuyi.com/webservice/sms.php?method=Submit"
@@ -151,6 +168,7 @@ def send_sms(appid, key, mob):
     return response_str
 
 
+# 随机数
 def _random(nums):
     nums = nums
     code = ''.join(str(i) for i in random.sample(range(0, 9), nums))

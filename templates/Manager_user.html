@@ -145,17 +145,17 @@
             <div class="mui-input-row  mui-search" style="width:19%;position: absolute;top:0;left:59%;" id="page_box">
                 <!--页码选择-->
                 <input type="search" class="mui-input-clear" id="page" name="page"
-                       value="<gt name='page' value='1'>{$page}</gt>" style="margin:5px 0;"/>
+                       value="{% if page>1 %}{{ page }}{% endif %}" style="margin:5px 0;"/>
             </div>
             <button class="mui-btn mui-btn-blue"
                     style="margin-top:4px;width:20%;float:right;margin-bottom:10px;padding:6px 0;text-align:center;"
                     id="refresh_btn">手动刷新
             </button>
-            <input type="hidden" id="gid" name="gameid" value="{$gameid}">
-            <input type="hidden" name="agentid" id="agentid" value="{$agentid}"/>
-            <input type="hidden" name="usertype" id="usertype" value="{$usertype}"/>
-            <input type="hidden" name="sorttype" id="sorttype" value="{$sorttype}"/>
-            <input type="hidden" name="refreshtype" id="refreshtype" value="{$refreshtype}"/>
+            <input type="hidden" id="gid" name="gameid" value="{{ gameid }}">
+            <input type="hidden" name="agentid" id="agentid" value="{{ agentid }}"/>
+            <input type="hidden" name="usertype" id="usertype" value="{{ usertype }}"/>
+            <input type="hidden" name="sorttype" id="sorttype" value="{{ sorttype }}"/>
+            <input type="hidden" name="refreshtype" id="refreshtype" value="{{ refreshtype }}"/>
         </form>
         <div id="pullrefresh" class="mui-content mui-scroll-wrapper" style="overflow-y:scroll;"><!--主体内容-->
             <div class="mui-scroll" style="margin-top: 90px;">
@@ -255,10 +255,10 @@
             <p>平台选择：</p>
             <select class="data_select" id="agentid2" style="width:70%">
                 <volist name="agent_list" id="AgentName">
-                    <option value="{$key}"
-                    <eq name="agentid" value="$key">selected="selected"</eq>
-                    >
-                    {$AgentName}
+                    <option value="{{ key }}">
+                        <eq name="agentid" value="{{ key }}">selected="selected"</eq>
+                        >
+                        {{ AgentName }}
                     </option>
                 </volist>
             </select>
@@ -494,7 +494,7 @@
         var pages = p - 1;
         var size = 25;
         var totals = p * size;	//	$('tbody').html('')
-        $.get("{{ url_for('manager.ajax_online_user') }}", {
+        $.post("{{ url_for('manager.ajax_online_user') }}", {
             gameid: 0,
             gameids: gid,
             agentid: agentid,
