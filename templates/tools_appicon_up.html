@@ -1,0 +1,77 @@
+{% extends 'tools_base.html' %}
+{% block head %}
+    <title>icon生成工具</title>
+    <style>
+        .fileinput-button {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+        }
+
+        .fileinput-button input {
+            position: absolute;
+            right: 0px;
+            top: 0px;
+            opacity: 0;
+            -ms-filter: 'alpha(opacity=0)';
+        }
+
+        .jz {
+            text-align: center;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            $("#upload").on("change", "input[type='file']", function () {
+                var filePath = $(this).val();
+                if (filePath.indexOf("jpg") != -1 || filePath.indexOf("png") != -1) {
+                    $(".fileerrorTip").html("").hide();
+                    var arr = filePath.split('\\');
+                    var fileName = arr[arr.length - 1];
+                    $(".msg_success").html('已选择图片: ' + fileName).css('color', '#6C6C6C');
+                } else {
+                    $(".msg_error").html("文件格式不正确: 请选择jpg或者png格式的图片进行上传!").css('color', 'red');
+                    return false
+                }
+            });
+        });
+        function check() {
+            var str = document.getElementById("files").value;
+            if (str.length == 0) {
+                alert("您还没有选择图片！");
+                return false;
+            }
+            return true;
+        }
+    </script>
+{% endblock %}
+{% block content %}
+    <section class="content">
+        <div class="row">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">图片支持的格式为png, jpg 像素1024×1024最佳</h3>
+                </div>
+                <form role="form" method="post" action="{{ url_for("tools.appicon_upload") }}"
+                      enctype="multipart/form-data" onsubmit="return check()">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="exampleInputFile">File input</label>
+                            <div>
+                            <span id="upload" class="btn bg-olive btn-flat margin fileinput-button">
+                                <span>选择需要上传的图片</span>
+                                <input id="files" type="file" name="files" onclick="files.check()">
+                            </span>
+                            </div>
+                            <p class="help-block msg_success msg_error"></p>
+                        </div>
+                    </div>
+                    <div class="box-footer jz">
+                        <button type="submit" class="btn btn-lg btn-primary">上传图片</button>
+                    </div>
+                </form>
+                {{ messages }}
+            </div>
+        </div>
+    </section>
+{% endblock %}

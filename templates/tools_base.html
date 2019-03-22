@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index/ionicons.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index/jquery-jvectormap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login/AdminLTE.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index/_all-skins.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index/f1.css') }}">
+    <script src="{{ url_for('static', filename='js/index/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index/fastclick.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index/adminlte.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index/jquery.sparkline.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index/jquery-jvectormap-1.2.2.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index/jquery.slimscroll.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index/Chart.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index/demo.js') }}"></script>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    {% block head %}{% endblock %}
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<header class="main-header">
+    <a href="{{ url_for('tools.tools') }}" class="logo">
+        <span class="logo-mini"><b>H</b>ome</span>
+        <span class="logo-lg"><b>工具</b>Home</span>
+    </a>
+    <nav class="navbar navbar-static-top">
+        <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+            </ul>
+        </div>
+    </nav>
+</header>
+<section class="content">
+{% block content %}{% endblock %}
+</section>
+</body>
+</html>

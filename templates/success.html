@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        function OpenDiv() {
+            document.getElementById("div1").style.display = "block";
+            document.getElementById("open").style.display = "none";
+        }
+    </script>
+    <style>
+        #div1 {
+            display: none;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+<form method="post" action="{{ url_for('tools.appicon_download') }}">
+    <div id="div1">
+        <p>图片制作中，请耐心等待...</p>
+    </div>
+    <input type="hidden" name="icon" value="{{ new_filename }}">
+    <button type="submit" value="download" onclick="javascript:OpenDiv();" id="open">download</button>
+</form>
+</body>
+</html>

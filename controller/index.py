@@ -26,11 +26,11 @@ def index():
             agent_info = Agent.query.filter_by(AgentID=admin_info.AgentID).first()
             agent_name = agent_info.AgentName
     nav_dict = api.init_nav()
-    return render_template('Index_index.html', admin_info=admin_info, role_name=role_name, user_ip=user_ip,
+    return render_template('index.html', admin_info=admin_info, role_name=role_name, user_ip=user_ip,
                            agent_name=agent_name, nav_dict=nav_dict)
 
 
 #进入登录页面
 @index_blueprint.route('/')
 def login():
-    return render_template('Admin_login.html')
+    return render_template('login.html')

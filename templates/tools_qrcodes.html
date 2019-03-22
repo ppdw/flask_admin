@@ -1,0 +1,61 @@
+{% extends 'tools_base.html' %}
+{% block head %}
+    <style>
+        .jz {
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <section class="content">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="box box-primary">
+                    <div class="box-body box-profile">
+                        <img class="profile-img img-responsive"
+                             src="{{ url_for('static', filename='img/qrcode/qrcode.png') }}">
+                        <ul class="list-group list-group-unbordered">
+                            <li class="list-group-item">
+                                <b>上传logo</b>
+                                <button class="btn pull-right btn-primary label-success btn-xs" type="submit">上传
+                                </button>
+                            </li>
+                        </ul>
+                        <div class="jz">
+                            <form action="{{ url_for('tools.qrcodes_down') }}" method="post">
+                                <input name="filename" type="hidden" value="{{ img_name }}">
+                                <button type="submit" class="btn btn-primary">下载二维码</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#activity" data-toggle="tab">网址</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="active tab-pane" id="activity">
+                            <div class="post clearfix">
+                                <form class="form-horizontal" action="{{ url_for('tools.qrcodes') }}" method="post">
+                                    <div class="form-group margin-bottom-none">
+                                        <div class="col-sm-9">
+                                            {#                                            <input name="heads" type="hidden" value="http://">#}
+                                            <input class="form-control input-sm" name="web_name" placeholder="http://">
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <button type="submit" class="btn btn-danger pull-right btn-block btn-sm">
+                                                生成二维码
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
