@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, render_template, request, url_for, session, jsonify, json
 from controller import api
 from config.public import Public
-from model.test import Admin,Agent
+from model.test import Admin, Agent
 
 manager_blueprint = Blueprint('manager', __name__, template_folder='templates', static_folder='static')
 
@@ -15,9 +15,9 @@ def user():
     admin_agentid = admin_info.AgentID
     agent_info = Agent.query.filter_by(AgentID=admin_agentid).first()
     agentid = request.form.get("agentid")
-    keyword = request.form.get("keyword",'')
+    keyword = request.form.get("keyword", '')
     roomid = request.form.get("roomid")
-    return render_template('Manager_user.html',page=1)
+    return render_template('Manager_user.html', page=1)
 
 
 @manager_blueprint.route('/ajax_online_user/', methods=['POST'])
