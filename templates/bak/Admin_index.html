@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>管理员列表</title>
+    <script src="/static/Mobile/js/mui.min.js"></script>
+    <link href="/static/Mobile/css/mui.min.css" rel="stylesheet"/>
+    <link href="/static/Mobile/css/public.css" rel="stylesheet"/>
+    <link href="/static/Mobile/css/iconfont.css" rel="stylesheet"/>
+    <style type="text/css">
+        .mui-popover {
+            height: 250px;
+            /*position: absolute;*/
+            top: 50% !important;
+            margin-top: -125px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable">
+    {% include 'Public_nav.html' %}
+    <div class="mui-inner-wrap">
+
+        <header class="mui-bar mui-bar-nav">
+            <a href="#offCanvasSide-left" class="mui-icon mui-icon-bars mui-pull-left"></a>
+            <h1 class="mui-title">管理员列表</h1>
+            <a href="#offCanvasSide-right" class="mui-icon iconfont icon-zhilupai mui-pull-right"></a>
+        </header>
+        <!--搜索框-->
+        <form class="mui-input-row mui-search" action="__URL__/index"
+              style="z-index: 91;top:44px;position: fixed;left:0;width: 100%;">
+            <input type="search" id="keyword" name="keyword" value="{$keyword}" placeholder="搜索管理员ID">
+        </form>
+        <!--表格筛选-->
+        <!--<form id="filter-form" class="mui-input-row mui-search"  style="z-index: 91;top:44px;position: fixed;left:0;width: 100%;">
+            <input name="filter" style="margin-bottom: 10px" class="mui-input-clear" id="filter" value="" maxlength="30" size="30" type="search" placeholder="搜索"/>
+        </form>-->
+
+        <div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+
+            <div class="mui-scroll" style="margin-top:59px;">
+                <div id="sliderSegmentedControl" style='overflow-y:scroll;'
+                     class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+
+                    <table id="item1-table" class='item1-table' style="white-space: nowrap;width: 100%;">
+                        <thead>
+                        <tr style='background: #ddd;height: 40px;border:1px solid #ccc;z-index: 99;'
+                            class='mui-slider-handle'>
+                            <th>管理员(ID)</th>
+                            <!--<th>管理员</th>-->
+                            <th>真实姓名</th>
+                            <th>代理</th>
+                            <th>角色权限</th>
+                            <th>加入时间</th>
+                            <th>登录IP</th>
+                            <th>登录时间</th>
+                            <th>状态</th>
+                        </tr>
+
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+
+            <div style='height: 45px;text-align: center;border:1px solid #eee;padding: 5px;position:fixed;bottom:0;left:0;width: 100%;background: #fff;z-index: 99;'>
+                <button type="button" class="mui-btn mui-btn-blue" id="add_but" href="{:U('Admin/info')}">添加管理员</button>
+            </div>
+        </div>
+        <!-- off-canvas backdrop -->
+        <div class="mui-off-canvas-backdrop"></div>
+    </div>
+</div>
+
+<!--页面主体-----end-->
+<!--弹出框-->
+<div id="middlePopover" class="mui-popover">
+    <div class="mui-popover-arrow" style='width:0!important;height: 0!important;display:none;'></div>
+    <div class="mui-scroll-wrapper" style="margin:0;" id="Popover-ul">
+        <div class="mui-scroll">
+            <ul class="Popover-ul" style='text-align: center;padding: 0;margin:12px 0;'>
+                <li class="Popover-li name_li"><a href="#" style="font-weight:bold;"></a></li>
+                <li class="Popover-li login_li">
+                    <a href="#" style=''>登录权限</a>
+                </li>
+                <li class="Popover-li edit_li">
+                    <a href="#" style=''>编辑</a>
+                </li>
+                <li class="Popover-li handle_li">
+                    <a href="#" style=''>操作汇总</a>
+                </li>
+                <li class="Popover-li delete_li">
+                    <a href="#" style='color:red;'>删除</a>
+                </li>
+                <li class="Popover-li power_li" style="border: none;display:none">
+                    <a href="#" style=''>权限</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script>
+
+
+    mui.init();
+    //主界面和侧滑菜单界面均支持区域滚动；
+    mui('#offCanvasSideScroll-left').scroll();
+    mui('#offCanvasSideScroll-right').scroll();
+    mui('#pullrefresh').scroll();
+    mui.init({
+        pullRefresh: {
+            container: '#pullrefresh',
+            up: {
+                contentrefresh: '正在加载...',
+                contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+                callback: pullupRefresh
+            },
+            down: {
+                callback: function () {
+                    window.location.reload();
+                }
+            }
+        }
+    });
+    /**
+     * 上拉加载具体业务实现
+     */
+    var count = 0;
+    var page = 1;
+
+    function pullupRefresh() {
+        var pages = page - 1;
+        var size = 10;
+        var keyword = $('#keyword').val();
+        $.get("{:U('Admin/ajax_admin')}", {p: page, keyword: keyword}, function (data) {
+            for (var i = 0; i < data.length; i++) {
+                var top = 42 * i + 42 + pages * size * 42;
+                if (data[i]['AgentName'] == null) {
+                    partner = '顶级代理';
+                } else {
+                    partner = data[i]['AgentName']
+                }
+                if (data[i]['Name'] == '') {
+                    name = '----'
+                } else {
+                    name = data[i]['Name']
+                }
+                if (data[i]['LastLoginIP'] == null) {
+                    ip = '----'
+                } else {
+                    ip = data[i]['LastLoginIP']
+                }
+                if (data[i]['LastLoginTM'] == null) {
+                    lt = '----'
+                } else {
+                    lt = data[i]['LastLoginTM']
+                }
+                if (data[i]['IsSystem'] == 1) {
+                    role = '管理员'
+                } else {
+                    if (data[i]['RoleName'] == null) {
+                        role = '自定义';
+                    } else {
+                        role = data[i]['RoleName']
+                    }
+                }
+                if (data[i]['IsEnable'] == 1) {
+                    src = '<img src="_Mobile_/images/article_reicon1.png"/>'
+                } else {
+                    src = '<img src="_Mobile_/images/article_reicon2.png"/>'
+                }
+                if (role == '自定义') {
+                    aa = 1;
+                } else {
+                    aa = 0;
+                }
+                var str = '<tr style="height: auto;border:1px solid #ccc" class="tr' + data[i]['ID'] + '" name="' + data[i]['ID'] + '" alt="' + aa + '" data-name="' + data[i]['UserName'] + '">' +
+                    //						'<td>' + data[i]['ID'] + '</td>' +
+                    //						'<td>' + data[i]['UserName'] + '</td>' +
+                    '<td>' + data[i]['UserName'] + '(' + data[i]['ID'] + ')</td>' +
+                    '<td>' + name + '</td>' +
+                    '<td>' + partner + '</td>' +
+                    '<td>' + role + '</td>' +
+                    '<td>' + data[i]['RegTime'] + '</td>' +
+                    '<td>' + ip + '</td>' +
+                    '<td>' + lt + '</td>' +
+                    '<td>' + src +
+                    '<a href="#middlePopover" style="position:absolute;top:' + top + 'px;left:0;width:100%;height: 42px;"></a></td></tr>'
+                //下拉刷新，新纪录插到最后面；
+                $('.item1-table tbody').append(str);
+            }
+            mui('#pullrefresh').pullRefresh().endPullupToRefresh(); //参数为true代表没有更多数据了。
+        }, "json");
+        page++;
+    }
+
+    //预加载
+    if (mui.os.plus) {
+        mui.plusReady(function () {
+            setTimeout(function () {
+                mui('#pullrefresh').pullRefresh().pullupLoading();
+            }, 1000);
+
+        });
+    } else {
+        mui.ready(function () {
+            mui('#pullrefresh').pullRefresh().pullupLoading();
+        });
+    }
+    //
+    //		new Tablesort(document.getElementById('item1-table'));
+    //		mui('.mui-scroll-wrapper').scroll();
+    mui('.item1-table').on('tap', 'tr', sethref);
+
+    function sethref() {
+        var aa = this.getAttribute('name');
+        var bb = this.getAttribute('alt');
+        var name = this.getAttribute('data-name');
+        $('.name_li').find('a').text('管理员：' + name)
+        if (bb == 1) {
+            $('.power_li').show();
+        } else {
+            $('.power_li').hide();
+        }
+        $('.delete_li').find('a').attr('href', "__URL__/delete_admin/id/" + aa);
+        $('.edit_li').find('a').attr('href', "__URL__/info/id/" + aa);
+        $('.handle_li').find('a').attr('href', "__URL__/handle/id/" + aa);
+        $('.power_li').find('a').attr('href', "__URL__/power/uid/" + aa);
+        $('.login_li').find('a').attr('href', "__URL__/mac/id/" + aa);
+    }
+
+    document.getElementById('add_but').addEventListener('tap', function () {
+        openCustUR(this.getAttribute('href'));
+    });
+</script>
+
+</html>

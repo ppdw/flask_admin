@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>管理员日志</title>
+    <script src="/static/Mobile/js/mui.min.js"></script>
+    <link href="/static/Mobile/css/mui.min.css" rel="stylesheet"/>
+    <link href="/static/Mobile/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/static/Mobile/css/daterangepicker.css" rel="stylesheet"/>
+    <link href="/static/Mobile/css/public.css" rel="stylesheet"/>
+    <link href="/static/Mobile/css/iconfont.css" rel="stylesheet"/>
+
+</head>
+
+<body class='mui-fullscreen'>
+
+<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable">
+    <!--左侧滑菜单部分-->
+    {% include 'Public_nav.html' %}
+    <!--主界面部分-->
+    <div class="mui-inner-wrap">
+
+        <header class="mui-bar mui-bar-nav" style="background: #3DA9FE;box-shadow: 0 1px 9px #999;">
+            <a href="#offCanvasSide-left" class="mui-icon mui-icon-bars mui-pull-left"></a>
+            <h1 class="mui-title">管理员日志</h1>
+            <a href="#offCanvasSide-right" class="mui-icon iconfont icon-zhilupai mui-pull-right"></a>
+        </header>
+
+        <form action="__URL__/log" method="post"
+              style="position: absolute;top: 44px;left: 0;z-index: 9;width: 100%;background: #eee;" id="form1">
+            <div class="mui-input-row mui-search" style="width: 34%;">
+                <input type="search" class="mui-input-clear" name="keyword" id="keyword" placeholder="搜索平台ID、平台名称"
+                       value="{{ keyword }}" style="margin-bottom: 12px;">
+            </div>
+            <input class="date_picker" name="date_picker" type="text" id="date_picker"
+                   style="width: 65%;position: absolute;top: 5px;right: 5px;"/>
+        </form>
+        <!--表格筛选-->
+        <!--<form id="filter-form" class="mui-input-row mui-search"  style="z-index: 91;top:44px;position: fixed;left:0;width: 100%;">
+             <input name="filter" style="margin-bottom: 10px" class="mui-input-clear" id="filter" value="" maxlength="30" size="30" type="search" placeholder="搜索"/>
+         </form>-->
+
+        <div id="pullrefresh" class="mui-content mui-scroll-wrapper" style="margin-top:100px;padding-top: 0;">
+            <div class="mui-scroll">
+
+                <div class="mui-slider " style='z-index: 90;'>
+                    <div id="sliderSegmentedControl" style='overflow-y:scroll;'
+                         class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+
+                        <table id='item1-table' class='item1-table' style="white-space: nowrap;width: 100%;">
+                            <thead>
+                            <tr style='background: #ddd;height: 40px;border:1px solid #ccc;z-index: 99;'
+                                class='mui-slider-handle'>
+                                <th>日志ID</th>
+                                <th>管理员名</th>
+                                <th>代理</th>
+                                <th>登录ID</th>
+                                <th>操作日期</th>
+                                <th>操作类别</th>
+                                <th>操作内容</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+        <!-- off-canvas backdrop -->
+        <div class="mui-off-canvas-backdrop"></div>
+    </div>
+</div>
+<!--页面主体-----end-->
+
+<!--弹出框-->
+<div id="middlePopover" class="mui-popover" style="height: 110px;">
+    <div class="mui-popover-arrow" style='width:0!important;height: 0!important;display:none;'></div>
+    <div class="mui-scroll-wrapper" style="margin:0;" id="Popover-ul">
+        <div class="mui-scroll">
+            <ul class="Popover-ul" style='text-align: center;padding: 0;margin:12px 0'>
+                <li class="Popover-li name_li"><a href="#" style="font-weight:bold;"></a></li>
+                <li class="Popover-li delete_li" style="border: none;">
+                    <a href="#" style=''>删除日志</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    //主界面和侧滑菜单界面均支持区域滚动；
+    mui('#offCanvasSideScroll-left').scroll();
+    mui('#offCanvasSideScroll-right').scroll();
+    mui('#pullrefresh').scroll();
+    mui.init({
+        pullRefresh: {
+            container: '#pullrefresh',
+            up: {
+                contentrefresh: '正在加载...',
+                contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+                callback: pullupRefresh
+            },
+            down: {
+                callback: function () {
+                    window.location.reload();
+                }
+            }
+        }
+    });
+
+    $(function () {
+        $('#date_picker').daterangepicker({startDate: "{{ starttime }}", endDate: "{{ endtime }}"});
+    });
+
+    $('#keyword').bind('keyup', function (e) {
+        var theEvent = e || window.event;
+        var code = theEvent.keyCode || theEvent.which || theEvent.charCode;
+        if (code == 13) {
+            pullupRefresh();
+        }
+    });
+
+    /**
+     * 上拉加载具体业务实现
+     */
+    $('.applyBtn').live("click", function () {
+        $("#form1").submit();
+    });
+    var count = 0;
+    var page = 1;
+
+    function pullupRefresh() {
+        var date_picker = $('#date_picker').val();
+        var pages = page - 1;
+        var size = 15;
+        var keyword = $('#keyword').val();
+        $.get("{{ url_for('admin.ajax_log') }}", {p: page, keyword: keyword, date_picker: date_picker}, function (data) {
+            var str = '';
+            for (var i = 0; i < data.length; i++) {
+                var top = 42 * i + 42 + pages * size * 42;
+                if (data[i]['AgentName'] == null) {
+                    partner = '顶级代理';
+                } else {
+                    partner = data[i]['AgentName']
+                }
+                str += '<tr style="height: auto;border:1px solid #ccc" class="tr' + data[i]['ID'] + '" name="' + data[i]['ID'] + '"><td>' + data[i]['ID'] + '</td>' +
+                    '<td>' + data[i]['AdminUser'] + ' </td>' +
+                    '<td>' + partner + '</td>' +
+                    '<td>' + data[i]['AdminIP'] + '</td>' +
+                    '<td>' + data[i]['InputDate'] + '</td>' +
+                    '<td>' + data[i]['ActionName'] + '</td>' +
+                    '<td>' + data[i]['ActionContent'] +
+                    '<a href="#middlePopover" style="position:absolute;top:' + top + 'px;left:0;width: 100%;height: 42px;" id="tr-a(' + i + ')"></a>'
+                '</td></tr>';
+                //下拉刷新，新纪录插到最后面；
+
+            }
+            $('.item1-table tbody').append(str);
+            mui('#pullrefresh').pullRefresh().endPullupToRefresh(); //参数为true代表没有更多数据了。
+        }, "json");
+        page++;
+        //console.log(total);
+    }
+
+    //预加载
+    if (mui.plus) {
+        mui.plusReady(function () {
+            setTimeout(function () {
+                mui('#pullrefresh').pullRefresh().pullupLoading();
+            }, 1000);
+        });
+    } else {
+        mui.ready(function () {
+            mui('#pullrefresh').pullRefresh().pullupLoading();
+        });
+    }
+    //		new Tablesort(document.getElementById('item1-table'));
+    mui('.item1-table').on('tap', 'tr', sethref);
+
+    function sethref() {
+        var aa = this.getAttribute('name');
+        $('.name_li').find('a').text('日志ID：' + name)
+        //$('.delete_li').find('a').attr('href', "__URL__/log_delete/id/" + aa);
+    }
+
+</script>
+
+</html>
