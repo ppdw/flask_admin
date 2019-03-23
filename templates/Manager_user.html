@@ -30,7 +30,7 @@
                                                     <th class="sorting">用户</th>
                                                     <th class="sorting">总充值</th>
                                                     <th class="sorting">单笔最大输赢值</th>
-                                                    <th class="sorting">身上 银行 / 游戏币</th>
+                                                    <th class="sorting">身上游戏币 # 银行</th>
                                                     <th class="sorting">游戏</th>
                                                     <th class="sorting">总输赢</th>
                                                     <th class="sorting">总库存</th>
@@ -39,7 +39,8 @@
                                                     <th class="sorting">注册时间</th>
                                                 </tr>
                                                 </thead>
-                                                <tbody></tbody>
+                                                <tbody>
+                                                </tbody>
                                                 <tfoot>
                                                 </tfoot>
                                             </table>
@@ -111,6 +112,7 @@
                 var pages = p - 1;
                 var size = 25;
                 var totals = p * size;
+                var $tbody = $(this).find("tbody");
                 $.post("{{ url_for('manager.ajax_online_user') }}", {
                     {#gameid: 0,#}
                     {#gameids: gid,#}
@@ -145,28 +147,22 @@
                             var max_win = parseInt(data[i]['maxwin'], 10);
                             var game_bi = parseInt(data[i]['gamebi'], 10);
                             var bank_gamebi = parseInt(data[i]['bankgamebi'], 10);
-                            var money_up_td = money_up == 0 ? ('<td title="单笔赢值" style="border-right:none;">0</td>') : ('<td title="单笔赢值" style="border-right:none;color:green;">+' + money_up + '</td>');
-                            var money_down_td = money_down == 0 ? ('<td title="单笔输值">0</td>') : ('<td title="单笔输值" style="color:red;">-' + money_down + '</td>');
-                            var str = '<tr style="height:32px;border:1px solid #ccc" class="tr' + data[i]['uid'] + '" name="' + data[i]['uid'] + '" data-name="' + data[i]['nickname'] + '">' +
+                            var str = '<tr style="height:32px;border:1px solid #ccc" class="tr">' +
                                 '<td class="color' + data[i]['analysisgm'] + '">' + status_change(data[i]['gmlevel']) + '</td>' +
                                 '<td>' + data[i]['agentname'] + '</td>' +
                                 '<td>' + data[i]['nickname'] + ' [ ' + data[i]['uid'] + ' ]</td>' +
                                 '<td>' + data[i]['rechargetotal'] + '</td>' +
-                                money_up_td +
-                                money_down_td +
                                 '<td title="最大输赢值">' + (max_win == 0 ? 0 : max_win) + '</td>' +
-                                '<td title="余额" style="border-right:none;">' + (game_bi == 0 ? 0 : game_bi) + '</td>' +
-                                '<td title="银行余额">' + (bank_gamebi == 0 ? 0 : bank_gamebi) + '</td>' +
+                                '<td title="余额" style="border-right:none;">' + (game_bi == 0 ? 0 : game_bi) + ' # ' + (bank_gamebi == 0 ? 0 : bank_gamebi)+'</td>' +
                                 '<td>' + game + '</td>' +
                                 '<td>' + data[i]['allwinlost'] + '</td>' +
                                 '<td>' + data[i]['totalstock'] + '</td>' +
                                 '<td>' + data[i]['copperbullet'] + ',' + data[i]['silverbullet'] + ',' + data[i]['goldbullet'] + '</td>' +
                                 '<td>' + data[i]['viplevel'] + '</td>' +
-                                '<td>' + data[i]['registertime'] + '</td>' +
-                                '<td>' + (pages + 1) + '<a href="#middlePopover" style="position:absolute;top:' + top + 'px;left:0;width: 100%;height: 32px;" id="tr-a(' + i + ')"></a></td></tr>';
+                                '<td>' + data[i]['registertime'] + '</td></tr>';
                             html += str;//table.appendChild(s)//下拉刷新，新纪录插到最后面；
                         }
-                        $('.item1-table tbody').append(html);
+                        $tbody.append(html);
                     }
                 }, "json");
             }
