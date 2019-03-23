@@ -21,7 +21,7 @@
                                 <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
                                     <div class="row">
                                         <div class="col-sm-12">
-                                            <table id="example2" class="table table-bordered table-hover dataTable"
+                                            <table id="item1-table" class="table table-bordered table-hover dataTable"
                                                    role="grid" aria-describedby="example2_info">
                                                 <thead>
                                                 <tr role="row">
@@ -39,22 +39,7 @@
                                                     <th class="sorting">注册时间</th>
                                                 </tr>
                                                 </thead>
-                                                <tbody>
-                                                <tr role="row" class="odd">
-                                                    <td class="">白名单5</td>
-                                                    <td class="">测试推荐码功能</td>
-                                                    <td class="">Yy117Y [ 175121 ]</td>
-                                                    <td class="">Embedded devices</td>
-                                                    <td class="">Embedded devices</td>
-                                                    <td class="">Embedded devices</td>
-                                                    <td class="">Embedded devices</td>
-                                                    <td class="">Embedded devices</td>
-                                                    <td class="">Embedded devices</td>
-                                                    <td class="">Embedded devices</td>
-                                                    <td class="">Embedded devices</td>
-                                                    <td class="">2019-03-06 14:46:59</td>
-                                                </tr>
-                                                </tbody>
+                                                <tbody></tbody>
                                                 <tfoot>
                                                 </tfoot>
                                             </table>
@@ -107,4 +92,85 @@
             </div>
         </section>
     </div>
+    <script type="text/javascript">
+        $(function () {
+                var b1 = ['无', '白名单1', '白名单2', '白名单3', '白名单4', '白名单5'];
+                var b2 = ['无', '黑名单1', '黑名单2', '黑名单3', '黑名单4', '黑名单5'];
+                var status_change = function (a, b) {
+                    var a = Number(a);
+                    var b;
+                    if (a > 0) {
+                        var b = b1[a];
+                    } else {
+                        var a = -a;
+                        var b = b2[a];
+                    }
+                    return b;
+                };
+                var p = 2;
+                var pages = p - 1;
+                var size = 25;
+                var totals = p * size;
+                $.post("{{ url_for('manager.ajax_online_user') }}", {
+                    {#gameid: 0,#}
+                    {#gameids: gid,#}
+                    {#agentid: agentid,#}
+                    {#two_agent: two_agent,#}
+                    {#p: page,#}
+                    {#usertype: usertype,#}
+                    {#sorttype: sorttype,#}
+                    {#userid: userid,#}
+                    {#refreshtype: refreshtype,#}
+                    {#roomid: roomid,#}
+                    {#gameid2: gameid2#}
+                }, function (list) {
+                    {#var total = list.total;#}
+                    {#$('#usernum').text(total);#}
+                    var data = list.data;
+                    {#var page_total = Math.ceil(total / 25);#}
+                    {#var pps = pp - 1;#}
+                    {#$('#page_box .mui-placeholder span:not(.mui-icon-search)').text("页码搜索/共" + page_total + "页");#}
+                    if (data) {
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+                            {#var top = ($('#page').val() == '') ? (32 * i + 42 + pages * size * 32) : (32 * i + 42 + pps * size * 32);#}
+                            //	desk 	= (data[i]['desk']==32766) ? '未坐下' : parseInt(data[i]['desk'])+1 ;
+                            var game = data[i]['gamename'];
+                            if (data[i]['room'] != 0) {
+                                game = data[i]['gamename'] + '-' + data[i]['roomname'];
+                            }
+                            //*获取 身上游戏币 显示变化数据*//
+                            var money_up = parseInt(data[i]['moneyUp'], 10);
+                            var money_down = parseInt(data[i]['moneyDown'], 10);
+                            var max_win = parseInt(data[i]['maxwin'], 10);
+                            var game_bi = parseInt(data[i]['gamebi'], 10);
+                            var bank_gamebi = parseInt(data[i]['bankgamebi'], 10);
+                            var money_up_td = money_up == 0 ? ('<td title="单笔赢值" style="border-right:none;">0</td>') : ('<td title="单笔赢值" style="border-right:none;color:green;">+' + money_up + '</td>');
+                            var money_down_td = money_down == 0 ? ('<td title="单笔输值">0</td>') : ('<td title="单笔输值" style="color:red;">-' + money_down + '</td>');
+                            var str = '<tr style="height:32px;border:1px solid #ccc" class="tr' + data[i]['uid'] + '" name="' + data[i]['uid'] + '" data-name="' + data[i]['nickname'] + '">' +
+                                '<td class="color' + data[i]['analysisgm'] + '">' + status_change(data[i]['gmlevel']) + '</td>' +
+                                '<td>' + data[i]['agentname'] + '</td>' +
+                                '<td>' + data[i]['nickname'] + ' [ ' + data[i]['uid'] + ' ]</td>' +
+                                '<td>' + data[i]['rechargetotal'] + '</td>' +
+                                money_up_td +
+                                money_down_td +
+                                '<td title="最大输赢值">' + (max_win == 0 ? 0 : max_win) + '</td>' +
+                                '<td title="余额" style="border-right:none;">' + (game_bi == 0 ? 0 : game_bi) + '</td>' +
+                                '<td title="银行余额">' + (bank_gamebi == 0 ? 0 : bank_gamebi) + '</td>' +
+                                '<td>' + game + '</td>' +
+                                '<td>' + data[i]['allwinlost'] + '</td>' +
+                                '<td>' + data[i]['totalstock'] + '</td>' +
+                                '<td>' + data[i]['copperbullet'] + ',' + data[i]['silverbullet'] + ',' + data[i]['goldbullet'] + '</td>' +
+                                '<td>' + data[i]['viplevel'] + '</td>' +
+                                '<td>' + data[i]['registertime'] + '</td>' +
+                                '<td>' + (pages + 1) + '<a href="#middlePopover" style="position:absolute;top:' + top + 'px;left:0;width: 100%;height: 32px;" id="tr-a(' + i + ')"></a></td></tr>';
+                            html += str;//table.appendChild(s)//下拉刷新，新纪录插到最后面；
+                        }
+                        $('.item1-table tbody').append(html);
+                    }
+                }, "json");
+            }
+        );
+    </script>
+
 {% endblock %}
