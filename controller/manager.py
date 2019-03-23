@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, render_template, request, url_for, session, jsonify, json
 from controller import api
 from config.public import Public
-from model.test import Admin, Agent
+from model.test import Admin, Agent ,Gamelist,db
 
 manager_blueprint = Blueprint('manager', __name__, template_folder='templates', static_folder='static')
 
@@ -56,9 +56,31 @@ def ajax_online_user():
         'time': 1552036733,
         'code': 'aa2ad2acc6247f19e73ba1b64b82307c',
     }
-    user_info = api.fpost(cgi_url, data)
-    temp = []
-    return user_info
+    user_info_json = api.fpost(cgi_url, data)
+    user_info_dict = json.loads(user_info_json)
+    for temp in user_info_dict['data']:
+        agentid = temp['agentid']
+        if agentid == 1:
+            temp['agentname'] = '平台'
+        else:
+            try:
+                agent_info = Agent.query.filter_by(AgentID=agentid).first()
+                temp['agentname'] = agent_info.AgentName
+            except:
+                temp['agentname'] = '未知代理'
+        if temp['gameid'] == 0:
+            temp['gamename'] = '游戏大厅'
+        else:
+            try:
+                gamelist = Gamelist.query.filter_by(Gid=temp['gameid']).first()
+                temp['gamename'] = gamelist.GameName
+            except:
+                temp['gamename'] = '未知游戏'
+
+    user_info_json = json.dumps(user_info_dict)
+
+
+    return user_info_json
 
 
 @manager_blueprint.route('/frozen_list/')
