@@ -160,16 +160,16 @@ class Role(db.Model):
 
 class Gamelist(db.Model):
     __tablename__ = 'gamelist'
-    GameID = db.Column('GameID', db.INTEGER, nullable=False),
-    Gid = db.Column('Gid', db.INTEGER, nullable=False,primary_key=True),
-    CatID = db.Column('CatID', db.INTEGER, nullable=False),
-    GameName = db.Column('GameName', db.String(20), nullable=False),
-    Version = db.Column('Version', db.INTEGER),
-    PackageName = db.Column('PackageName', db.String(50)),
-    IsEnable = db.Column('IsEnable', db.INTEGER, nullable=False, server_default='0'),
-    SortNum = db.Column('SortNum', db.INTEGER),
-    Status = db.Column('Status', db.INTEGER, nullable=False, server_default='0'),
-    SeatNum = db.Column('SeatNum', db.INTEGER),
+    GameID = db.Column('GameID', db.INTEGER, nullable=False)
+    Gid = db.Column('Gid', db.INTEGER, nullable=False, primary_key=True)
+    CatID = db.Column('CatID', db.INTEGER, nullable=False)
+    GameName = db.Column('GameName', db.String(20), nullable=False)
+    Version = db.Column('Version', db.INTEGER)
+    PackageName = db.Column('PackageName', db.String(50))
+    IsEnable = db.Column('IsEnable', db.INTEGER, nullable=False, server_default='0')
+    SortNum = db.Column('SortNum', db.INTEGER)
+    Status = db.Column('Status', db.INTEGER, nullable=False, server_default='0')
+    SeatNum = db.Column('SeatNum', db.INTEGER)
     AlgoType = db.Column('AlgoType', db.INTEGER)
 
     def __init__(self, GameName, Gid,GameID):
