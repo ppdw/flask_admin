@@ -1,7 +1,8 @@
 from flask import Blueprint, redirect, render_template, request, url_for, session, jsonify, json
 from controller import api
 from config.public import Public
-from model.test import Admin, Agent ,Gamelist,db
+from model.test import Admin, Agent, Gamelist, db
+import time
 
 manager_blueprint = Blueprint('manager', __name__, template_folder='templates', static_folder='static')
 
@@ -60,6 +61,7 @@ def ajax_online_user():
     user_info_dict = json.loads(user_info_json)
     for temp in user_info_dict['data']:
         agentid = temp['agentid']
+        temp['registertime'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(temp['registertime']))
         if agentid == 1:
             temp['agentname'] = '平台'
         else:
@@ -78,7 +80,6 @@ def ajax_online_user():
                 temp['gamename'] = '未知游戏'
 
     user_info_json = json.dumps(user_info_dict)
-
 
     return user_info_json
 
