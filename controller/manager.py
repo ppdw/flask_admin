@@ -62,7 +62,7 @@ def ajax_online_user():
     for temp in user_info_dict['data']:
         agentid = temp['agentid']
         temp['registertime'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(temp['registertime']))
-        if agentid == 1:
+        if agentid == 1 or agentid == 0:
             temp['agentname'] = '平台'
         else:
             try:
