@@ -40,6 +40,7 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
+
                                                 </tbody>
                                                 <tfoot>
                                                 </tfoot>
@@ -93,6 +94,7 @@
             </div>
         </section>
     </div>
+
     <script type="text/javascript">
         $(function () {
                 var b1 = ['无', '白名单1', '白名单2', '白名单3', '白名单4', '白名单5'];
@@ -150,10 +152,10 @@
                             var str = '<tr style="height:32px;border:1px solid #ccc" class="tr">' +
                                 '<td class="color' + data[i]['analysisgm'] + '">' + status_change(data[i]['gmlevel']) + '</td>' +
                                 '<td>' + data[i]['agentname'] + '</td>' +
-                                '<td>' + data[i]['nickname'] + ' [ ' + data[i]['uid'] + ' ]</td>' +
+                                '<td class="btn btn-default btn-block" data-toggle="modal" data-target="#myModal">' + data[i]['nickname'] + ' [ ' + data[i]['uid'] + ' ]</td>' +
                                 '<td>' + data[i]['rechargetotal'] + '</td>' +
                                 '<td title="最大输赢值">' + (max_win == 0 ? 0 : max_win) + '</td>' +
-                                '<td title="余额" style="border-right:none;">' + (game_bi == 0 ? 0 : game_bi) + ' # ' + (bank_gamebi == 0 ? 0 : bank_gamebi)+'</td>' +
+                                '<td title="余额" style="border-right:none;">' + (game_bi == 0 ? 0 : game_bi) + ' # ' + (bank_gamebi == 0 ? 0 : bank_gamebi) + '</td>' +
                                 '<td>' + game + '</td>' +
                                 '<td>' + data[i]['allwinlost'] + '</td>' +
                                 '<td>' + data[i]['totalstock'] + '</td>' +
@@ -167,6 +169,35 @@
                 }, "json");
             }
         );
+    </script>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel">用户: ####</h4>
+                </div>
+                <div class="modal-body">
+                    <button type="button" class="btn btn-block btn-info">财富日志</button>
+                    <button type="button" class="btn btn-block btn-info">名单管理</button>
+                    <button type="button" class="btn btn-block btn-success">加币</button>
+                    <button type="button" class="btn btn-block btn-info ">幸运之心</button>
+                    <button type="button" class="btn btn-block btn-info">查看用户信息</button>
+                    <button type="button" class="btn btn-block btn-info">用户消费账单</button>
+                    <button type="button" class="btn btn-block btn-danger">冻结用户</button>
+                </div>
+                <div class="modal-footer">
+                    {#                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>#}
+                    {#                    <button type="button" class="btn btn-primary">提交更改</button>#}
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <script>
+        $(function () {
+            $('#myModal').modal('hide')
+        });
     </script>
 
 {% endblock %}
