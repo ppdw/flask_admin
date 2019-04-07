@@ -3,8 +3,8 @@
     <div class="content-wrapper">
         <section class="content-header">
             <h1>
-                Data Tables
-                <small>advanced tables</small>
+                在线人数
+                <small>(共<span id="usernum"></span>人)</small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -123,6 +123,7 @@
                 var size = 25;
                 var totals = p * size;
                 var $tbody = $(this).find("tbody");
+                var pp = 0;
                 $.post("{{ url_for('manager.ajax_online_user') }}", {
                     {#gameid: 0,#}
                     {#gameids: gid,#}
@@ -139,8 +140,11 @@
                     {#var total = list.total;#}
                     {#$('#usernum').text(total);#}
                     var data = list.data;
-                    {#var page_total = Math.ceil(total / 25);#}
-                    {#var pps = pp - 1;#}
+                    var total = list.total;
+                    $('#usernum').text(total);
+                    var data = list.data;
+                    var page_total = Math.ceil(total / 25);
+                    var pps = pp - 1;
                     {#$('#page_box .mui-placeholder span:not(.mui-icon-search)').text("页码搜索/共" + page_total + "页");#}
                     if (data) {
                         var html = '';
