@@ -11,6 +11,7 @@
                 <li><a href="#">Tables</a></li>
                 <li class="active">Data tables</li>
             </ol>
+{#            <input type="hidden" id="agentid" value="{{ admin_agentid }}">#}
         </section>
         <section class="content">
             <div class="row">
@@ -122,14 +123,15 @@
                 var pages = p - 1;
                 var size = 25;
                 var totals = p * size;
+                var agentid = $('#agentid').val();
                 var $tbody = $(this).find("tbody");
                 var pp = 0;
                 $.post("{{ url_for('manager.ajax_online_user') }}", {
                     {#gameid: 0,#}
-                    {#gameids: gid,#}
+                    {#gameids: '',#}
                     {#agentid: agentid,#}
                     {#two_agent: two_agent,#}
-                    {#p: page,#}
+                    {#p: pages,#}
                     {#usertype: usertype,#}
                     {#sorttype: sorttype,#}
                     {#userid: userid,#}

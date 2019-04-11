@@ -3,6 +3,7 @@ from controller import api
 from config.public import Public
 from model.test import Admin, Agent, Gamelist, db
 import time
+import datetime
 
 manager_blueprint = Blueprint('manager', __name__, template_folder='templates', static_folder='static')
 
@@ -18,44 +19,32 @@ def user():
     agentid = request.form.get("agentid")
     keyword = request.form.get("keyword", '')
     roomid = request.form.get("roomid")
-    return render_template('Manager_user.html', page=1)
+    return render_template('Manager_user.html', page=1, admin_agentid=admin_agentid)
 
 
 @manager_blueprint.route('/ajax_online_user/', methods=['POST'])
 def ajax_online_user():
+    admin_id = session.get('admin_id')
+    admin_info = Admin.query.filter_by(ID=admin_id).first()
+    admin_agentid = admin_info.AgentID
+    pid = admin_info.PartnerID
+    currtime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # 获取当前时间
+    format_currtime = time.strptime(currtime, "%Y-%m-%d %H:%M:%S")  # 格式化时间
+    unix_currtime = int(time.mktime(format_currtime))  # 转换成unix时间戳
+
     cgi_url = Public.user_cgi + "?method=accountcgi_get_user_online_pinpai_auto"
-    gameid = request.form.get("gameid")
-    gameids = request.form.get("gameids")
-    agentid = request.form.get("agentid")
-    p = request.form.get("p")
-    usertype = request.form.get("usertype")
-    sorttype = request.form.get("sorttype")
-    userid = request.form.get("userid")
-    refreshtype = request.form.get("refreshtype")
-    roomid = request.form.get("roomid")
-    gameid2 = request.form.get("gameid2")
-    print("gameid", gameid)
-    print("gameids", gameids)
-    print("agentid", agentid)
-    print("p", p)
-    print("usertype", usertype)
-    print("sorttype", sorttype)
-    print("userid", userid)
-    print("refreshtype", refreshtype)
-    print("roomid", roomid)
-    print("gameid2", gameid2)
     data = {
         'agentids': 0,
-        'agentid': 0,
+        'agentid': admin_agentid,
         'gameid': 0,
         'gameids': '',
         'usertype': 0,
         'sorttype': 0,
         'page': 1,
         'size': 25,
-        'pid': 9,
-        'time': 1552036733,
-        'code': 'aa2ad2acc6247f19e73ba1b64b82307c',
+        'pid': pid,
+        'time': unix_currtime,
+        'code': api.md5(str(int(unix_currtime / 2))),
     }
     user_info_json = api.fpost(cgi_url, data)
     user_info_dict = json.loads(user_info_json)
