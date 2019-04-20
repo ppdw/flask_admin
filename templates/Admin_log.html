@@ -9,16 +9,13 @@
                         <input type="text" class="form-control pull" id="reserv" value="0" name="reserv">
                     </div>
                     <div class="form-group">
-                        <select class="form-control select2" style="width: 40%;" id="agentid">
+                        <select class="form-control select2" style="width: 40%;" id="admin_info">
+                            <option selected="selected"
+                                    value="all">所有管理员
+                            </option>
                             {% for admin_name in user_list %}
-                                {% if admin_name == 'admin' %}
-                                    <option selected="selected"
-                                            value="{{ admin_name }}">{{ admin_name }}
-                                    </option>
-                                {% else %}
-                                    <option value="{{ admin_name }}">--{{ admin_name }}
-                                    </option>
-                                {% endif %}
+                                <option value="{{ admin_name }}">--{{ admin_name }}
+                                </option>
                             {% endfor %}
                         </select>
                     </div>
