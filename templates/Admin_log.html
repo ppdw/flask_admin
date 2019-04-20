@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>管理员日志</h1>
+            <div class="input-group" style="width: 100%;">
+                <div style="width: 100%;">
+                    <div style="width: 40%;float: right">
+                        <input type="text" class="form-control pull" id="reserv" value="0" name="reserv">
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control select2" style="width: 40%;" id="agentid">
+                            {% for admin_name in user_list %}
+                                {% if admin_name == 'admin' %}
+                                    <option selected="selected"
+                                            value="{{ admin_name }}">{{ admin_name }}
+                                    </option>
+                                {% else %}
+                                    <option value="{{ admin_name }}">--{{ admin_name }}
+                                    </option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div style="width: 40%;float: left;">
+                        <input type="text" class="form-control pull-right" id="reservation">
+                    </div>
+                    <button type="submit" id="getsech" name="getsech" class="btn btn-primary"
+                            style="float: right; width: 40%;">点击查询
+                    </button>
+                </div>
+            </div>
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box">
+                            <div class="box-body">
+                                <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <table id="item1-table" class="table table-bordered table-hover dataTable"
+                                                   role="grid" aria-describedby="example2_info">
+                                                <thead>
+                                                <tr role="row">
+                                                    <th class="sorting">日志ID</th>
+                                                    <th class="sorting">管理员</th>
+                                                    <th class="sorting">代理</th>
+                                                    <th class="sorting">登入IP</th>
+                                                    <th class="sorting">操作日期</th>
+                                                    <th class="sorting">操作内容</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                </tbody>
+                                                <tfoot>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <div class="dataTables_paginate paging_simple_numbers"
+                                                 id="example2_paginate">
+                                                <ul class="pagination">
+                                                    <li class="paginate_button previous disabled"
+                                                        id="example2_previous"><a href="#" aria-controls="example2"
+                                                                                  data-dt-idx="0"
+                                                                                  tabindex="0">上一页</a></li>
+                                                    <li class="paginate_button active"><a href="#"
+                                                                                          aria-controls="example2"
+                                                                                          data-dt-idx="1"
+                                                                                          tabindex="0">1</a></li>
+                                                    <li class="paginate_button next" id="example2_next"><a href="#"
+                                                                                                           aria-controls="example2"
+                                                                                                           data-dt-idx="7"
+                                                                                                           tabindex="0">下一页</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <script type="text/javascript">
+        $('.select2').select2();
+        var channelid = 0;
+        var agent_id = $("#agentid").val();
+        var locale = {
+            "format": 'YYYY-MM-DD',
+            "separator": " - ",
+            "applyLabel": "确定",
+            "cancelLabel": "取消",
+            "fromLabel": "起始时间",
+            "toLabel": "结束时间",
+            "weekLabel": "W",
+            "daysOfWeek": ["日", "一", "二", "三", "四", "五", "六"],
+            "monthNames": ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+            "firstDay": 1
+        };
+        //初始化显示当前时间
+        $('#reservation').html(moment().format('YYYY-MM-DD') + ' - ' + moment().format('YYYY-MM-DD'));
+        //日期控件初始化
+        $('#reservation').daterangepicker(
+            {
+                'locale': locale,
+            },
+            function (start, end) {
+                $('#reservation').html(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
+            }
+        );
+        $(function () {
+                var $tbody = $(this).find("tbody");
+                $.post("{{ url_for('admin.ajax_log') }}", {}, function (list) {
+                    var total = list.total;
+                    var data = list.data;
+                    if (data) {
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+                            var game = data[i]['gamename'];
+                            if (data[i]['room'] != 0) {
+                                game = data[i]['gamename'] + '-' + data[i]['roomname'];
+                            }
+                            var str = '<tr style="height:32px;border:1px solid #ccc" class="tr">' +
+                                '<td class="color' + data[i]['analysisgm'] + '">' + status_change(data[i]['gmlevel']) + '</td>' +
+                                '<td>' + data[i]['agentname'] + '</td>' +
+                                '<td class="btn btn-default btn-block" data-toggle="modal" data-target="#myModal">' + data[i]['nickname'] + ' [ ' + data[i]['uid'] + ' ]</td>' +
+                                '<td>' + data[i]['rechargetotal'] + '</td>' +
+                                '<td title="最大输赢值">' + (max_win == 0 ? 0 : max_win) + '</td>' +
+                                '<td title="余额" style="border-right:none;">' + (game_bi == 0 ? 0 : game_bi) + ' # ' + (bank_gamebi == 0 ? 0 : bank_gamebi) + '</td>' +
+                                '<td>' + game + '</td>' +
+                                '<td>' + data[i]['allwinlost'] + '</td>' +
+                                '<td>' + data[i]['totalstock'] + '</td>' +
+                                '<td>' + data[i]['copperbullet'] + ',' + data[i]['silverbullet'] + ',' + data[i]['goldbullet'] + '</td>' +
+                                '<td>' + data[i]['viplevel'] + '</td>' +
+                                '<td>' + data[i]['registertime'] + '</td></tr>';
+                            html += str;
+                        }
+                        $tbody.append(html);
+                    }
+                }, "json");
+            }
+        );
+    </script>
+{% endblock %}

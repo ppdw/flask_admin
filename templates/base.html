@@ -12,6 +12,13 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login/AdminLTE.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index/_all-skins.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index/f1.css') }}">
+    {# 时间控件 #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index/daterangepicker.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index/AdminLTE.min.css') }}">
+
     <script src="{{ url_for('static', filename='js/index/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/index/bootstrap.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/index/fastclick.js') }}"></script>
@@ -21,6 +28,13 @@
     <script src="{{ url_for('static', filename='js/index/jquery.slimscroll.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/index/Chart.js') }}"></script>
     <script src="{{ url_for('static', filename='js/index/demo.js') }}"></script>
+    {# 时间控件 #}
+    <script src="{{ url_for('static', filename='js/index/moment.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index/select2.full.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index/jquery.inputmask.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index/daterangepicker.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index/jquery.inputmask.date.extensions.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index/jquery.inputmask.extensions.js') }}"></script>
     {% block head %}{% endblock %}
 </head>
 <body class="hold-transition skin-blue sidebar-mini fixed">
@@ -69,25 +83,25 @@
             </form>
             <ul class="sidebar-menu" data-widget="tree">
                 <li class="header"></li>
-            {% for k,v in nav_dict.items() %}
-                        <li class="treeview {% if nav_on==k %}active{% endif %}">
-                        <a href="#">
-                            <i class="glyphicon glyphicon-th-list"></i>
-                            <span>{{ k }}</span>
-                            <span class="pull-right-container">
+                {% for k,v in nav_dict.items() %}
+                    <li class="treeview {% if nav_on==k %}active{% endif %}">
+                    <a href="#">
+                        <i class="glyphicon glyphicon-th-list"></i>
+                        <span>{{ k }}</span>
+                        <span class="pull-right-container">
                                 <i class="fa fa-angle-left pull-right"></i>
                             </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            {% for k1,v1 in v.items() %}
+                    </a>
+                    <ul class="treeview-menu">
+                        {% for k1,v1 in v.items() %}
                             <li class="active">
-                                    <a href="{{ url_for(k1,nav_on=k) }}">
-                                        <i class="fa fa-circle-o"></i>{{ v1 }}
-                                    </a>
+                                <a href="{{ url_for(k1,nav_on=k) }}">
+                                    <i class="fa fa-circle-o"></i>{{ v1 }}
+                                </a>
                             </li>
-                            {% endfor %}
-                        </ul>
-            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
             </ul>
             <ul class="sidebar-menu" data-widget="tree">
                 <li>

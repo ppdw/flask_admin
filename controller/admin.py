@@ -88,8 +88,12 @@ def log():
         keyword = ''
     starttime = (datetime.datetime.now() - datetime.timedelta(days=7)).strftime('%Y-%m-%d')
     endtime = datetime.datetime.now().strftime('%Y-%m-%d')
+    admin_info = Admin.query.filter_by().all()
+    user_list = []
+    for admin_name in admin_info:
+        user_list.append(admin_name.UserName)
     return render_template('Admin_log.html', starttime=starttime, endtime=endtime,
-                           keyword=keyword)
+                           keyword=keyword, user_list=user_list)
 
 
 # 管理员日志刷新
