@@ -22,7 +22,7 @@
                     <div style="width: 40%;float: left;">
                         <input type="text" class="form-control pull-right" id="reservation">
                     </div>
-                    <button type="submit" id="getsech" name="getsech" class="btn btn-primary"
+                    <button type="button" id="getsech" name="getsech" onclick="input_data();" class="btn btn-primary"
                             style="float: right; width: 40%;">点击查询
                     </button>
                 </div>
@@ -43,14 +43,12 @@
                                                 <tr role="row">
                                                     <th class="sorting">日志ID</th>
                                                     <th class="sorting">管理员</th>
-                                                    <th class="sorting">代理</th>
                                                     <th class="sorting">登入IP</th>
                                                     <th class="sorting">操作日期</th>
                                                     <th class="sorting">操作内容</th>
                                                 </tr>
                                                 </thead>
-                                                <tbody>
-
+                                                <tbody id="tbody">
                                                 </tbody>
                                                 <tfoot>
                                                 </tfoot>
@@ -116,37 +114,32 @@
                 $('#reservation').html(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
             }
         );
-        $(function () {
-                var $tbody = $(this).find("tbody");
-                $.post("{{ url_for('admin.ajax_log') }}", {}, function (list) {
-                    var total = list.total;
-                    var data = list.data;
-                    if (data) {
-                        var html = '';
-                        for (var i = 0; i < data.length; i++) {
-                            var game = data[i]['gamename'];
-                            if (data[i]['room'] != 0) {
-                                game = data[i]['gamename'] + '-' + data[i]['roomname'];
-                            }
-                            var str = '<tr style="height:32px;border:1px solid #ccc" class="tr">' +
-                                '<td class="color' + data[i]['analysisgm'] + '">' + status_change(data[i]['gmlevel']) + '</td>' +
-                                '<td>' + data[i]['agentname'] + '</td>' +
-                                '<td class="btn btn-default btn-block" data-toggle="modal" data-target="#myModal">' + data[i]['nickname'] + ' [ ' + data[i]['uid'] + ' ]</td>' +
-                                '<td>' + data[i]['rechargetotal'] + '</td>' +
-                                '<td title="最大输赢值">' + (max_win == 0 ? 0 : max_win) + '</td>' +
-                                '<td title="余额" style="border-right:none;">' + (game_bi == 0 ? 0 : game_bi) + ' # ' + (bank_gamebi == 0 ? 0 : bank_gamebi) + '</td>' +
-                                '<td>' + game + '</td>' +
-                                '<td>' + data[i]['allwinlost'] + '</td>' +
-                                '<td>' + data[i]['totalstock'] + '</td>' +
-                                '<td>' + data[i]['copperbullet'] + ',' + data[i]['silverbullet'] + ',' + data[i]['goldbullet'] + '</td>' +
-                                '<td>' + data[i]['viplevel'] + '</td>' +
-                                '<td>' + data[i]['registertime'] + '</td></tr>';
-                            html += str;
-                        }
-                        $tbody.append(html);
+
+        function input_data() {
+            var date_time = $('#reservation').val();
+            $.post("{{ url_for('admin.ajax_log') }}", {
+                date_time: date_time,
+                keyword: 1,
+                {#page: 1,#}
+            }, function (list) {
+                var data = list;
+                {#alert(data);#}
+                if (data) {
+                    var html = '';
+                    {#alert(data.length);#}
+                    for (var i = 0; i < data.length; i++) {
+                        var str = '<tr style="height:32px;border:1px solid #ccc" class="tr">' +
+                            '<td>' + data[i]['ID'] + '</td>' +
+                            '<td>' + data[i]['AdminUser'] + '</td>' +
+                            '<td>' + data[i]['AdminIP'] + '</td>' +
+                            '<td>' + data[i]['InputDate'] + '</td>' +
+                            '<td>' + data[i]['ActionContent'] + '</td></tr>';
+                        {#alert(data[i]['ActionContent']);#}
+                        html += str;
                     }
-                }, "json");
-            }
-        );
+                    $('#tbody').html(html);
+                }
+            }, "json");
+        };
     </script>
 {% endblock %}

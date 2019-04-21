@@ -30,10 +30,8 @@ def info():
             exit()
         else:
             admin_id = session.get('admin_id')
-            print(admin_id)
             admin_info = Admin.query.filter_by(ID=admin_id).first()
             ChangeTime = datetime.datetime.now()
-            print(ChangeTime)
             my_pwd = api.create_pwd(new_password, api.strtotime(ChangeTime))
             admin_info.UserPwd = my_pwd
             admin_info.RegTime = ChangeTime
@@ -55,13 +53,11 @@ def act_admin_login():
     admin_pwd = request.form['admin_pwd']
     try:
         admin_info = Admin.query.filter_by(UserName=admin_user).first()
-        print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@' + str(admin_info.LastLoginTM))
         my_pwd = api.create_pwd(admin_pwd, api.strtotime(admin_info.RegTime))
         if my_pwd == admin_info.UserPwd:
             session['admin_id'] = admin_info.ID
             session['admin_user'] = admin_user
             admin_info.LastLoginTM = datetime.datetime.now()
-            print('###############################' + str(admin_info.LastLoginTM))
             admin_info.LoginCount = int(admin_info.LoginCount) + 1
             admin_info.LastLoginIP = request.remote_addr
             db.session.commit()
@@ -97,15 +93,15 @@ def log():
 
 
 # 管理员日志刷新
-@admin_blueprint.route('/ajax_log/')
+@admin_blueprint.route('/ajax_log/', methods=['POST'])
 def ajax_log():
-    page = int(request.args.get("p"))
-    keyword = request.args.get("keyword")
-    date_picker = request.args.get("date_picker")
+    # page = request.form['page']
+    keyword = request.form['keyword']
+    date_picker = request.form['date_time']
     date_arr = date_picker.split('- ')
     starttime = date_arr[0]
     endtime = date_arr[1]
-    log_info = Adminactionlog.query.order_by(Adminactionlog.InputDate.desc()).paginate(page=page, per_page=15).items
+    log_info = Adminactionlog.query.order_by(Adminactionlog.InputDate.desc()).paginate(page=1, per_page=15).items
     # log_info = Adminactionlog.query.all()
     # for a in log_info:
     #     print(a.ActionContent)
