@@ -3,6 +3,7 @@ from flask import Blueprint, redirect, render_template, \
 from model.test import Admin, db, Adminactionlog, Agent
 from controller import api
 from controller.api import is_login
+from config.permission import Permission
 import datetime
 
 admin_blueprint = Blueprint('admin', __name__, template_folder='templates', static_folder='static')
@@ -57,6 +58,9 @@ def act_admin_login():
         if my_pwd == admin_info.UserPwd:
             session['admin_id'] = admin_info.ID
             session['admin_user'] = admin_user
+            log_data['ActionName'] = Permission.ACTION_NAME[1]
+            log_data['ActionContent'] = '管理员：' + str(admin_user) + '登入后台'
+            api.adminlogs(log_data)
             admin_info.LastLoginTM = datetime.datetime.now()
             admin_info.LoginCount = int(admin_info.LoginCount) + 1
             admin_info.LastLoginIP = request.remote_addr
@@ -79,40 +83,45 @@ def logout():
 # 管理员日志
 @admin_blueprint.route('/log/')
 def log():
-    keyword = request.args.get("keyword")
-    if keyword == None:
-        keyword = ''
-    starttime = (datetime.datetime.now() - datetime.timedelta(days=7)).strftime('%Y-%m-%d')
-    endtime = datetime.datetime.now().strftime('%Y-%m-%d')
     admin_info = Admin.query.filter_by().all()
     user_list = []
     for admin_name in admin_info:
         user_list.append(admin_name.UserName)
-    return render_template('Admin_log.html', starttime=starttime, endtime=endtime,
-                           keyword=keyword, user_list=user_list)
+    return render_template('Admin_log.html', user_list=user_list, ACTION_NAME=Permission.ACTION_NAME)
 
 
 # 管理员日志刷新
-@admin_blueprint.route('/ajax_log/', methods=['POST'])
+@admin_blueprint.route('/ajax_log/', methods=['GET'])
 def ajax_log():
-    # page = request.form['page']
-    keyword = request.form['keyword']
-    date_picker = request.form['date_time']
+    temp_dict = {}
+    page = int(request.args['page'])
+    date_picker = request.args['date_time']
     date_arr = date_picker.split('- ')
-    starttime = date_arr[0]
-    endtime = date_arr[1]
-    log_info = Adminactionlog.query.order_by(Adminactionlog.InputDate.desc()).paginate(page=1, per_page=15).items
-    # log_info = Adminactionlog.query.all()
-    # for a in log_info:
-    #     print(a.ActionContent)
-    ##
+    starttime = date_arr[0] + ' 00:00:00'
+    endtime = date_arr[1] + ' 23:59:59'
+    param = []
+    if ('admin_info' in request.args) and (request.args['admin_info']):
+        admin_info = request.args['admin_info']
+        param.append(Adminactionlog.AdminUser == admin_info)
+    if ('action_name' in request.args) and (request.args['action_name']):
+        action_name = request.args['action_name']
+        param.append(Adminactionlog.ActionName == action_name)
+    param.append(Adminactionlog.InputDate >= starttime)
+    param.append(Adminactionlog.InputDate <= endtime)
+    log_info = Adminactionlog.query.filter(*param).order_by(Adminactionlog.InputDate.desc()).paginate(page=page,
+                                                                                                      per_page=15)
+    pages = log_info.pages
+    log_info = log_info.items
     temp = []
     for x in log_info:
         temp.append(x.to_json())
-    return json.dumps(temp)
+    # 将数据存入字典
+    temp_dict['data'] = temp
+    temp_dict['pages'] = pages
+
+    return json.dumps(temp_dict)
 
 
-#
 @admin_blueprint.context_processor
 def my_context_processor():
     try:

@@ -378,3 +378,10 @@ class Permission:
             'admin.index': '管理员列表', 'admin.log': '管理员日志', 'role.index': '角色列表',
         }
     }
+
+    # 日志类型
+    ACTION_NAME = {
+        1: '管理员登入',
+        2: '编辑管理员',
+        3: '管理员控制',
+    }

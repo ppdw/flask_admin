@@ -5,16 +5,24 @@
             <h1>管理员日志</h1>
             <div class="input-group" style="width: 100%;">
                 <div style="width: 100%;">
-                    <div style="width: 40%;float: right">
-                        <input type="text" class="form-control pull" id="reserv" value="0" name="reserv">
+                    <div class="form-group" style="width: 40%; float: right">
+                        <select class="form-control select2" style="width: 100%;" id="action_name">
+                            <option selected="selected"
+                                    value="">所有类型
+                            </option>
+                            {% for action_name in ACTION_NAME %}
+                                <option value="{{ ACTION_NAME[action_name] }}">{{ ACTION_NAME[action_name] }}
+                                </option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="form-group">
                         <select class="form-control select2" style="width: 40%;" id="admin_info">
                             <option selected="selected"
-                                    value="all">所有管理员
+                                    value="">所有管理员
                             </option>
                             {% for admin_name in user_list %}
-                                <option value="{{ admin_name }}">--{{ admin_name }}
+                                <option value="{{ admin_name }}">{{ admin_name }}
                                 </option>
                             {% endfor %}
                         </select>
@@ -22,7 +30,7 @@
                     <div style="width: 40%;float: left;">
                         <input type="text" class="form-control pull-right" id="reservation">
                     </div>
-                    <button type="button" id="getsech" name="getsech" onclick="input_data();" class="btn btn-primary"
+                    <button type="button" id="getsech" name="getsech" class="btn btn-primary"
                             style="float: right; width: 40%;">点击查询
                     </button>
                 </div>
@@ -45,6 +53,7 @@
                                                     <th class="sorting">管理员</th>
                                                     <th class="sorting">登入IP</th>
                                                     <th class="sorting">操作日期</th>
+                                                    <th class="sorting">操作类型</th>
                                                     <th class="sorting">操作内容</th>
                                                 </tr>
                                                 </thead>
@@ -61,20 +70,7 @@
                                         <div class="col-sm-7">
                                             <div class="dataTables_paginate paging_simple_numbers"
                                                  id="example2_paginate">
-                                                <ul class="pagination">
-                                                    <li class="paginate_button previous disabled"
-                                                        id="example2_previous"><a href="#" aria-controls="example2"
-                                                                                  data-dt-idx="0"
-                                                                                  tabindex="0">上一页</a></li>
-                                                    <li class="paginate_button active"><a href="#"
-                                                                                          aria-controls="example2"
-                                                                                          data-dt-idx="1"
-                                                                                          tabindex="0">1</a></li>
-                                                    <li class="paginate_button next" id="example2_next"><a href="#"
-                                                                                                           aria-controls="example2"
-                                                                                                           data-dt-idx="7"
-                                                                                                           tabindex="0">下一页</a>
-                                                    </li>
+                                                <ul class="pagination" id="page_all">
                                                 </ul>
                                             </div>
                                         </div>
@@ -104,7 +100,7 @@
             "firstDay": 1
         };
         //初始化显示当前时间
-        $('#reservation').html(moment().format('YYYY-MM-DD') + ' - ' + moment().format('YYYY-MM-DD'));
+        $('#reservation').val(moment().subtract(7, 'days').format('YYYY-MM-DD') + ' - ' + moment().format('YYYY-MM-DD'));
         //日期控件初始化
         $('#reservation').daterangepicker(
             {
@@ -115,30 +111,101 @@
             }
         );
 
-        function input_data() {
+        //查询
+        $('#getsech').click(function () {
+            page = 1;
+            Input_Data();
+            Load_Data();
+        });
+
+        //初始化
+        var page = 1;
+        Input_Data();
+        Load_Data();
+
+        //请求数据
+        function Input_Data() {
             var date_time = $('#reservation').val();
-            $.post("{{ url_for('admin.ajax_log') }}", {
+            var admin_info = $('#admin_info').val();
+            var action_name = $('#action_name').val();
+            $.get("{{ url_for('admin.ajax_log') }}", {
                 date_time: date_time,
-                keyword: 1,
-                {#page: 1,#}
+                page: page,
+                admin_info: admin_info,
+                action_name: action_name,
             }, function (list) {
-                var data = list;
-                {#alert(data);#}
+                var data = list.data;
                 if (data) {
                     var html = '';
-                    {#alert(data.length);#}
                     for (var i = 0; i < data.length; i++) {
                         var str = '<tr style="height:32px;border:1px solid #ccc" class="tr">' +
                             '<td>' + data[i]['ID'] + '</td>' +
                             '<td>' + data[i]['AdminUser'] + '</td>' +
                             '<td>' + data[i]['AdminIP'] + '</td>' +
                             '<td>' + data[i]['InputDate'] + '</td>' +
+                            '<td>' + data[i]['ActionName'] + '</td>' +
                             '<td>' + data[i]['ActionContent'] + '</td></tr>';
-                        {#alert(data[i]['ActionContent']);#}
                         html += str;
                     }
                     $('#tbody').html(html);
                 }
+            }, "json");
+        };
+
+        //请求页码数
+        function Load_Data() {
+            var index = "";
+            var minys = 1;
+            var maxys = 1;
+            var date_time = $('#reservation').val();
+            var admin_info = $('#admin_info').val();
+            var action_name = $('#action_name').val();
+            $.get("{{ url_for('admin.ajax_log') }}", {
+                date_time: date_time,
+                page: page,
+                admin_info: admin_info,
+                action_name: action_name,
+            }, function (list) {
+                var maxys = list.pages;
+                index += "<li class='paginate_button next' id='example2_previous'>" +
+                    "<a href=\"#\" aria-controls=\"example2\" data-dt-idx=\"0\"tabindex=\"0\">上一页</a></li>";
+                for (var i = page - 2; i < page + 3; i++) {
+                    if (i >= minys && i <= maxys) {
+                        if (i == page) {
+                            index += "<li class='paginate_button active'" + "bs='" + i + "'>" + "<a href='#' aria-controls='example2' data-dt-idx='1' tabindex='0'>" + i + "</a></li>";
+                        } else {
+                            index += "<li class='paginate_button'" + "bs='" + i + "'>" + "<a href='#' aria-controls='example2' data-dt-idx='1' tabindex='0'>" + i + "</a></li>";
+                        }
+
+                    }
+                }
+                index += "<li class='paginate_button previous' id='example2_next'>" +
+                    "<a href=\"#\" aria-controls=\"example2\" data-dt-idx=\"0\"tabindex=\"0\">下一页</a></li>";
+                $('#page_all').html(index);
+                //给上一页添加点击事件
+                $("#example2_previous").click(function () {
+                    page = page - 1;
+                    if (page < 1) {
+                        page = 1;
+                    }
+                    Input_Data(); //加载数据
+                    Load_Data(); //加载分页信息
+                });
+                //给下一页加点击事件
+                $("#example2_next").click(function () {
+                    page = page + 1;
+                    if (page > maxys) {
+                        page = maxys;
+                    }
+                    Input_Data(); //加载数据
+                    Load_Data(); //加载分页信息
+                });
+                //给中间的列表加事件
+                $(".paginate_button active").click(function () {
+                    page = parseInt($(this).attr("bs"));
+                    Input_Data(); //加载数据
+                    Load_Data(); //加载分页信息
+                });
             }, "json");
         };
     </script>
