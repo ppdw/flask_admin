@@ -172,9 +172,9 @@
                 for (var i = page - 2; i < page + 3; i++) {
                     if (i >= minys && i <= maxys) {
                         if (i == page) {
-                            index += "<li class='paginate_button active'" + "bs='" + i + "'>" + "<a href='#' aria-controls='example2' data-dt-idx='1' tabindex='0'>" + i + "</a></li>";
+                            index += "<li class='paginate_button active'" + "mid_list='" + i + "'>" + "<a href='#' aria-controls='example2' data-dt-idx='1' tabindex='0'>" + i + "</a></li>";
                         } else {
-                            index += "<li class='paginate_button'" + "bs='" + i + "'>" + "<a href='#' aria-controls='example2' data-dt-idx='1' tabindex='0'>" + i + "</a></li>";
+                            index += "<li class='list'" + "mid_list='" + i + "'>" + "<a href='#' aria-controls='example2' data-dt-idx='1' tabindex='0'>" + i + "</a></li>";
                         }
 
                     }
@@ -201,8 +201,8 @@
                     Load_Data(); //加载分页信息
                 });
                 //给中间的列表加事件
-                $(".paginate_button active").click(function () {
-                    page = parseInt($(this).attr("bs"));
+                $(".list").click(function () {
+                    page = parseInt($(this).attr("mid_list"));
                     Input_Data(); //加载数据
                     Load_Data(); //加载分页信息
                 });
