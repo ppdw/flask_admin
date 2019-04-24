@@ -55,6 +55,7 @@
                                                     <th class="sorting">操作日期</th>
                                                     <th class="sorting">操作类型</th>
                                                     <th class="sorting">操作内容</th>
+                                                    <th class="sorting">管理操作</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody id="tbody">
@@ -83,6 +84,27 @@
             </div>
         </section>
     </div>
+    <!-- 弹出框 -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel">提示！</h4>
+
+                </div>
+                <div class="modal-body">是否需要删除此条日志</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" value="" id="delete_log" class="btn btn-primary" data-dismiss="modal">确认删除
+                    </button>
+                </div>
+                <a style="color: #aa1111"></a>
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript">
         $('.select2').select2();
         var channelid = 0;
@@ -138,19 +160,22 @@
                 if (data) {
                     var html = '';
                     for (var i = 0; i < data.length; i++) {
-                        var str = '<tr style="height:32px;border:1px solid #ccc" class="tr">' +
-                            '<td>' + data[i]['ID'] + '</td>' +
+                        var str = "<tr style='height:32px;border:1px solid #ccc'" + ">" +
+                            "<td>" + data[i]['ID'] + '</td>' +
                             '<td>' + data[i]['AdminUser'] + '</td>' +
                             '<td>' + data[i]['AdminIP'] + '</td>' +
                             '<td>' + data[i]['InputDate'] + '</td>' +
                             '<td>' + data[i]['ActionName'] + '</td>' +
-                            '<td>' + data[i]['ActionContent'] + '</td></tr>';
+                            '<td>' + data[i]['ActionContent'] + '</td>' +
+                            "<td>" + "<a href='#' name='toDel' style='color: red' systemidvaule='" + data[i]['ID'] +
+                            "' type='button' data-toggle='modal' data-target='#myModal'>删除</a>" +
+                            "</td></tr>";
                         html += str;
                     }
                     $('#tbody').html(html);
                 }
             }, "json");
-        };
+        }
 
         //请求页码数
         function Load_Data() {
@@ -207,6 +232,26 @@
                     Load_Data(); //加载分页信息
                 });
             }, "json");
-        };
+        }
+
+        //删除日志
+        $(function () {
+            $("a[name='toDel']").each(function () {
+                $(this).click(function () {
+                    var del_id = $(this).attr("systemidvaule");
+                    $("#delete_log").click(function () {
+                        $(this).val(del_id);
+                        var delete_log = $("#delete_log").val();
+                        $.get("{{ url_for('admin.delete_logs') }}", {delete_id: delete_log}, function (msg) {
+                                location.href = msg.href;
+                                location.replace(location.href);
+                        });
+                    })
+                });
+            });
+
+        });
+
     </script>
+
 {% endblock %}

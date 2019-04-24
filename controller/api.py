@@ -130,6 +130,7 @@ def fpost(url, data):
 
 # 日志写入
 def adminlogs(log_data):
+    # 普通管理员记录值为 0
     log_data['ConAct'] = 0
     if "UserID" not in log_data:
         log_data['UserID'] = None
@@ -137,6 +138,7 @@ def adminlogs(log_data):
         log_data['UserName'] = None
     admin_id = session.get('admin_id')
     admin_info = Admin.query.filter_by(ID=admin_id).first()
+    # vipadmin记录值为2
     if str(admin_info.UserName) == 'vipadmin':
         log_data['ConAct'] = 2
     logs = Adminactionlog(ID=0, ActionName=log_data['ActionName'], ActionContent=log_data['ActionContent'],
