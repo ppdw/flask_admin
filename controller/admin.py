@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, render_template, \
     request, url_for, session, jsonify, json
-from model.test import Admin, db, Adminactionlog, Agent
+from model.test import Admin, db, Adminactionlog, Agent, Role
 from controller import api
 from controller.api import is_login
 from config.permission import Permission
@@ -12,7 +12,42 @@ log_data = {}
 
 @admin_blueprint.route('/index/')
 def index():
-    return render_template('Admin_index.html')
+    admin_user = session.get('admin_user')
+    admin_info = Admin.query.filter_by().all()
+    user_list = []
+    for admin_name in admin_info:
+        user_list.append(admin_name.UserName)
+    if admin_user != 'vipadmin':
+        user_list.remove('vipadmin')
+    return render_template('Admin_index.html', user_list=user_list)
+
+
+# 管理员列表
+@admin_blueprint.route('/admin_index/', methods=['GET'])
+def admin_index():
+    # page = int(request.args('page'))
+    param = []
+    temp_dict = {}
+    if ('admin_info' in request.args) and (request.args['admin_info']):
+        admin_info = request.args['admin_info']
+        param.append(Admin.UserName == admin_info)
+    # admin_all = Admin.query.filter(*param).order_by(Admin.ID.desc()).paginate(page=1, per_page=15)
+    # admin_all = db.session.query(Admin.UserName, Admin.ID, Agent.AgentName, Role.RoleName, Admin.RegTime,
+    #                    Admin.LastLoginIP, Admin.LastLoginIP).filter(*param).filter(Admin.RoleID == Role.RoleID).all()
+    admin_all = db.session.query(Admin.UserName, Role.RoleName, Admin.ID, Admin.LastLoginIP, Admin.LastLoginTM, Admin.RegTime).filter(Admin.RoleID == Role.RoleID).filter(*param).all()
+    print(admin_all)
+    # pages = admin_all.pages
+    # admin_all = admin_all.items
+    # temp = []
+    # for i in admin_all:
+    #     if i.UserName != 'vipadmin':
+    #         temp.append(i.to_json())
+    # print(temp)
+
+    # temp_dict['data'] = temp
+    # temp_dict['pages'] = pages
+
+    return json.dumps(temp_dict)
 
 
 # 管理员信息
@@ -155,8 +190,9 @@ def delete_logs():
 @admin_blueprint.context_processor
 def my_context_processor():
     try:
+        admin_user = session.get('admin_user')
         nav_dict = api.init_nav()
         nav_on = api.last_nav()
-        return {'nav_dict': nav_dict, 'nav_on': nav_on}
+        return {'nav_dict': nav_dict, 'nav_on': nav_on, 'admin_user': admin_user}
     except:
         return redirect(url_for('index.login'))

@@ -30,7 +30,7 @@ def index():
                            agent_name=agent_name, nav_dict=nav_dict)
 
 
-#进入登录页面
+# 进入登录页面
 @index_blueprint.route('/')
 def login():
     return render_template('login.html')

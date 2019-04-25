@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>管理员列表</h1>
+            <div class="input-group" style="width: 100%;">
+                <div style="width: 100%;">
+                    <div class="form-group">
+                        <select class="form-control select2" style="width: 40%;" id="admin_info">
+                            <option selected="selected"
+                                    value="">所有管理员
+                            </option>
+                            {% for admin_name in user_list %}
+                                <option value="{{ admin_name }}">{{ admin_name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button type="button" id="get_search" name="getsech" class="btn btn-primary"
+                                style="float: right; width: 40%;">点击查询
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box">
+                            <div class="box-body">
+                                <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <table id="item1-table" class="table table-bordered table-hover dataTable"
+                                                   role="grid" aria-describedby="example2_info">
+                                                <thead>
+                                                <tr role="row">
+                                                    <th class="sorting">管理员(ID)</th>
+                                                    <th class="sorting">代理</th>
+                                                    <th class="sorting">角色权限</th>
+                                                    <th class="sorting">加入时间</th>
+                                                    <th class="sorting">登入IP</th>
+                                                    <th class="sorting">登入时间</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="tbody">
+                                                </tbody>
+                                                <tfoot>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <div class="dataTables_paginate paging_simple_numbers"
+                                                 id="example2_paginate">
+                                                <ul class="pagination" id="page_all">
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <div class="dataTables_paginate paging_simple_numbers">
+                                                <button type="submit" class="btn btn-info pull-right">添加管理员</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- 弹出框 -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel">提示！</h4>
+
+                </div>
+                <div class="modal-body">是否需要删除此条日志</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" value="" id="delete_log" class="btn btn-primary" data-dismiss="modal">确认删除
+                    </button>
+                </div>
+                <a style="color: #aa1111"></a>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $('.select2').select2();
+
+        //查询
+        $('#get_search').click(function () {
+            page = 1;
+            Input_Data();
+            Load_Data();
+        });
+
+        //初始化
+        var page = 1;
+        Input_Data();
+        Load_Data();
+
+        //请求数据
+        function Input_Data() {
+            var admin_info = $('#admin_info').val();
+            $.get("{{ url_for('admin.admin_index') }}", {
+                // page: page,
+                admin_info: admin_info,
+            }, function (list) {
+                var data = list.data;
+                if (data) {
+                    var html = '';
+                    for (var i = 0; i < data.length; i++) {
+                        var str = "<tr style='height:32px;border:1px solid #ccc'" + ">" +
+                            "<td>" + data[i]['UserName'] + "(" + data[i]['ID'] + ")</td>" +
+                            '<td>' + data[i]['AgentID'] + '</td>' +
+                            '<td>' + data[i]['RoleID'] + '</td>' +
+                            '<td>' + data[i]['RegTime'] + '</td>' +
+                            '<td>' + data[i]['LastLoginIP'] + '</td>' +
+                            '<td>' + data[i]['LastLoginTM'] + '</td></tr>';
+                        html += str;
+                    }
+                    $('#tbody').html(html);
+                }
+            }, "json");
+        }
+
+        //请求页码数
+        function Load_Data() {
+            var index = "";
+            var minys = 1;
+            var maxys = 1;
+            var admin_info = $('#admin_info').val();
+            $.get("{{ url_for('admin.admin_index') }}", {
+                // page: page,
+                admin_info: admin_info,
+            }, function (list) {
+                var maxys = list.pages;
+                index += "<li class='paginate_button next' id='example2_previous'>" +
+                    "<a href=\"#\" aria-controls=\"example2\" data-dt-idx=\"0\"tabindex=\"0\">上一页</a></li>";
+                for (var i = page - 2; i < page + 3; i++) {
+                    if (i >= minys && i <= maxys) {
+                        if (i == page) {
+                            index += "<li class='paginate_button active'" + "mid_list='" + i + "'>" + "<a href='#' aria-controls='example2' data-dt-idx='1' tabindex='0'>" + i + "</a></li>";
+                        } else {
+                            index += "<li class='list'" + "mid_list='" + i + "'>" + "<a href='#' aria-controls='example2' data-dt-idx='1' tabindex='0'>" + i + "</a></li>";
+                        }
+
+                    }
+                }
+                index += "<li class='paginate_button previous' id='example2_next'>" +
+                    "<a href=\"#\" aria-controls=\"example2\" data-dt-idx=\"0\"tabindex=\"0\">下一页</a></li>";
+                $('#page_all').html(index);
+                //给上一页添加点击事件
+                $("#example2_previous").click(function () {
+                    page = page - 1;
+                    if (page < 1) {
+                        page = 1;
+                    }
+                    Input_Data(); //加载数据
+                    Load_Data(); //加载分页信息
+                });
+                //给下一页加点击事件
+                $("#example2_next").click(function () {
+                    page = page + 1;
+                    if (page > maxys) {
+                        page = maxys;
+                    }
+                    Input_Data(); //加载数据
+                    Load_Data(); //加载分页信息
+                });
+                //给中间的列表加事件
+                $(".list").click(function () {
+                    page = parseInt($(this).attr("mid_list"));
+                    Input_Data(); //加载数据
+                    Load_Data(); //加载分页信息
+                });
+            }, "json");
+        }
+
+        //删除日志
+        $(function () {
+            $("a[name='toDel']").each(function () {
+                $(this).click(function () {
+                    var del_id = $(this).attr("systemidvaule");
+                    $("#delete_log").click(function () {
+                        $(this).val(del_id);
+                        var delete_log = $("#delete_log").val();
+                        $.get("{{ url_for('admin.delete_logs') }}", {delete_id: delete_log}, function (msg) {
+                            location.href = msg.href;
+                            location.replace(location.href);
+                        });
+                    })
+                });
+            });
+
+        });
+
+    </script>
+
+{% endblock %}
