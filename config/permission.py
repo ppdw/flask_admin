@@ -290,7 +290,7 @@ class Permission:
             },
             '管理员日志': {
                 'admin.log': {'name': '日志列表', 'interface': 'ajax_log,'},
-                'admin.log_delete': {'name': '删除', }
+                'admin.delete_logs': {'name': '删除', }
             },
             '角色列表': {
                 'role.index': {'name': '角色列表', 'interface': 'ajax_role'},
@@ -386,4 +386,5 @@ class Permission:
         3: '添加管理员',
         4: '删除日志',
         5: '删除管理员',
+        6: '删除角色权限',
     }
