@@ -239,8 +239,8 @@
             $("a[name='toDel']").each(function () {
                 $(this).click(function () {
                     var del_id = $(this).attr("systemidvaule");
+                    $('#delete_log').val(del_id);
                     $("#delete_log").click(function () {
-                        $(this).val(del_id);
                         var delete_log = $("#delete_log").val();
                         $.get("{{ url_for('admin.delete_logs') }}", {delete_id: delete_log}, function (msg) {
                                 location.href = msg.href;

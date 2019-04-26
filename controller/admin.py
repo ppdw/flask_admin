@@ -188,6 +188,8 @@ def ajax_log():
 # 删除管理员日志
 @admin_blueprint.route('/delete_logs/', methods=['GET'])
 def delete_logs():
+    if not api.checkpower('admin.delete_logs'):
+        return render_template('Public_error.html')
     admin_user = session.get('admin_user')
     delete_id = request.args['delete_id']
     try:
@@ -202,9 +204,10 @@ def delete_logs():
             log_data['ActionName'] = Permission.ACTION_NAME[4]
             log_data['ActionContent'] = '管理员：' + str(admin_user) + '删除了日志 ID: ' + str(delete_id)
             api.adminlogs(log_data)
-        return jsonify({'error': 0, 'info': '日志删除成功', 'href': '/admin/log/'})
+            return jsonify({'error': 0, 'info': '日志删除成功', 'href': '/admin/log/'})
+        return jsonify({'error': 2, 'info': '删除日志失败', 'href': '/admin/log/'})
     except:
-        return jsonify({'error': 2, 'info': '日志不存在', 'href': '/admin/log/'})
+        return jsonify({'error': 3, 'info': '日志不存在', 'href': '/admin/log/'})
 
 
 @admin_blueprint.context_processor

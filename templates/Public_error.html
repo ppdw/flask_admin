@@ -1,0 +1,33 @@
+{% extends 'tools_base.html' %}
+{% block head %}
+{% endblock %}
+{% block content %}
+    <section class="content-header">
+        <h1>
+            aoh! 权限不够
+        </h1>
+    </section>
+    <section class="content">
+
+        <div class="error-page">
+            <h2 class="headline text-red">Not Power</h2>
+
+            <div class="error-content">
+                <h3><i class="fa fa-warning text-red"></i> Oops! Something went wrong.</h3>
+
+                <p>
+                    We will work on fixing that right away.
+                    Meanwhile, you may <a href="{{ url_for('index.index') }}">return to Home</a> or try using the
+                    search form.
+                </p>
+                <form class="search-form" action="{{ url_for('index.index') }}" method="get">
+                    <div class="input-group">
+                        <div class="input-group-btn">
+                            <button type="submit" name="submit" class="btn btn-danger btn-flat">返回首页</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+{% endblock %}

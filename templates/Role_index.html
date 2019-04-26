@@ -2,24 +2,16 @@
 {% block content %}
     <div class="content-wrapper">
         <section class="content-header">
-            <h1>管理员列表</h1>
+            <h1>角色权限</h1>
             <div class="input-group" style="width: 100%;">
                 <div style="width: 100%;">
-                    <div class="form-group">
-                        <select class="form-control select2" style="width: 40%;" id="admin_info">
-                            <option selected="selected"
-                                    value="">所有管理员
-                            </option>
-                            {% for admin_name in user_list %}
-                                <option value="{{ admin_name }}">{{ admin_name }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                        <button type="button" id="get_search" name="getsech" class="btn btn-primary"
-                                style="float: right; width: 40%;">点击查询
-                        </button>
+                    <div style="width: 40%;float: left;">
+                        <input type="text" placeholder="输入权限名称来查找角色权限" class="form-control pull-right" id="reserv"
+                               value="">
                     </div>
-
+                    <button type="submit" id="get_search" name="getsech" class="btn btn-primary"
+                            style="float: right; width: 40%;">点击查询
+                    </button>
                 </div>
             </div>
         </section>
@@ -36,12 +28,9 @@
                                                    role="grid" aria-describedby="example2_info">
                                                 <thead>
                                                 <tr role="row">
-                                                    <th class="sorting">管理员(ID)</th>
-                                                    <th class="sorting">代理</th>
-                                                    <th class="sorting">角色权限</th>
-                                                    <th class="sorting">加入时间</th>
-                                                    <th class="sorting">登入IP</th>
-                                                    <th class="sorting">登入时间</th>
+                                                    <th class="sorting">权限ID</th>
+                                                    <th class="sorting">权限名称</th>
+                                                    <th class="sorting">权限描述</th>
                                                     <th class="sorting">管理操作</th>
                                                 </tr>
                                                 </thead>
@@ -68,7 +57,7 @@
                                         </div>
                                         <div class="col-sm-7">
                                             <div class="dataTables_paginate paging_simple_numbers">
-                                                <button type="submit" class="btn btn-info pull-right">添加管理员</button>
+                                                <button type="submit" class="btn btn-info pull-right">添加角色权限</button>
                                             </div>
                                         </div>
                                     </div>
@@ -90,13 +79,13 @@
                     <h4 class="modal-title" id="myModalLabel">提示！</h4>
 
                 </div>
-                <div class="modal-body">是否需要删除此管理员</div>
+                <div class="modal-body">是否需要删除此角色权限</div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" value="" id="delete_admin" class="btn btn-primary" data-dismiss="modal">确认删除
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="close_role">关闭</button>
+                    <button type="button" value="True" id="delete_role" class="btn btn-primary" data-dismiss="modal">
+                        确认删除
                     </button>
                 </div>
-                <a style="color: #aa1111"></a>
             </div>
         </div>
     </div>
@@ -118,23 +107,20 @@
 
         //请求数据
         function Input_Data() {
-            var admin_info = $('#admin_info').val();
-            $.get("{{ url_for('admin.admin_index') }}", {
+            var reserv = $('#reserv').val();
+            $.get("{{ url_for('role.ajax_role') }}", {
                 page: page,
-                admin_info: admin_info,
+                reserv: reserv,
             }, function (list) {
                 var data = list.data;
                 if (data) {
                     var html = '';
                     for (var i = 0; i < data.length; i++) {
                         var str = "<tr style='height:32px;border:1px solid #ccc'" + ">" +
-                            "<td>" + data[i]['UserName'] + "(" + data[i]['ID'] + ")</td>" +
-                            '<td>' + data[i]['AgentID'] + '</td>' +
-                            '<td>' + data[i]['RoleID'] + '</td>' +
-                            '<td>' + data[i]['RegTime'] + '</td>' +
-                            '<td>' + data[i]['LastLoginIP'] + '</td>' +
-                            '<td>' + data[i]['LastLoginTM'] + '</td>' +
-                            "<td>" + "<a href='#' >编辑&nbsp</a>" + "<a href='#' name='toDel' style='color: red' systemidvaule='" + data[i]['ID'] +
+                            "<td>" + data[i]['RoleID'] + "</td>" +
+                            '<td>' + data[i]['RoleName'] + '</td>' +
+                            '<td>' + data[i]['RoleDesc'] + '</td>' +
+                            "<td>" + "<a href='#' >编辑&nbsp</a>" + "<a href='#' name='toDel' style='color: red' systemidvaule='" + data[i]['RoleID'] +
                             "' type='button' data-toggle='modal' data-target='#myModal'>删除</a>" +
                             "</td></tr>";
                         html += str;
@@ -149,10 +135,10 @@
             var index = "";
             var minys = 1;
             var maxys = 1;
-            var admin_info = $('#admin_info').val();
-            $.get("{{ url_for('admin.admin_index') }}", {
+            var reserv = $('#reserv').val();
+            $.get("{{ url_for('role.ajax_role') }}", {
                 page: page,
-                admin_info: admin_info,
+                reserv: reserv,
             }, function (list) {
                 var maxys = list.pages;
                 index += "<li class='paginate_button next' id='example2_previous'>" +
@@ -202,17 +188,16 @@
             $("a[name='toDel']").each(function () {
                 $(this).click(function () {
                     var del_id = $(this).attr("systemidvaule");
-                    $('#delete_admin').val(del_id);
-                    $("#delete_admin").click(function () {
-                        var delete_admin = $("#delete_admin").val();
-                        $.get("{{ url_for('admin.delete_admin') }}", {delete_id: delete_admin}, function (msg) {
+                    $('#delete_role').val(del_id);
+                    $("#delete_role").click(function () {
+                        var delete_role = $('#delete_role').val();
+                        $.get("{{ url_for('role.delete') }}", {delete_id: delete_role}, function (msg) {
                             location.href = msg.href;
                             location.replace(location.href);
                         });
-                    })
+                    });
                 });
             });
-
         });
 
     </script>
