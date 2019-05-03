@@ -39,9 +39,12 @@ class Admin(db.Model):
     Sign = db.Column(db.String(50), server_default='3')
     IsAllOrder = db.Column(db.INTEGER, nullable=False, server_default='0')
 
-    def __init__(self, UserName, UserPwd, RegTime, ID, IsEnable, LastLoginIP, LastLoginTM, IsSystem, RoleID, AgentID):
+    def __init__(self, UserName, UserPwd, RegTime, ID, IsEnable, LastLoginIP, LastLoginTM, IsSystem, RoleID, AgentID,
+                 PowerList):
         self.ID = ID
         self.UserName = UserName
+        self.AgentID = AgentID
+        self.PowerList = PowerList
         self.UserPwd = UserPwd
         self.RegTime = RegTime
         self.IsEnable = IsEnable
@@ -49,7 +52,17 @@ class Admin(db.Model):
         self.LastLoginTM = LastLoginTM
         self.IsSystem = IsSystem
         self.RoleID = RoleID
-        self.AgentID = AgentID
+
+    def to_json(self):
+        return {
+            'ID': self.ID,
+            'UserName': self.UserName,
+            'AgentID': self.AgentID,
+            'RoleID': self.RoleID,
+            'RegTime': self.RegTime.strftime("%Y-%m-%d %H:%M:%S"),
+            'LastLoginIP': self.LastLoginIP,
+            'LastLoginTM': self.LastLoginTM.strftime("%Y-%m-%d %H:%M:%S"),
+        }
 
 
 class Adminactionlog(db.Model):
@@ -158,6 +171,7 @@ class Role(db.Model):
             'IsEnable': self.IsEnable,
         }
 
+
 class Gamelist(db.Model):
     __tablename__ = 'gamelist'
     GameID = db.Column('GameID', db.INTEGER, nullable=False)
@@ -172,7 +186,7 @@ class Gamelist(db.Model):
     SeatNum = db.Column('SeatNum', db.INTEGER)
     AlgoType = db.Column('AlgoType', db.INTEGER)
 
-    def __init__(self, GameName, Gid,GameID):
+    def __init__(self, GameName, Gid, GameID):
         self.Gid = Gid
         self.GameName = GameName
         self.GameID = GameID

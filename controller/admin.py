@@ -53,34 +53,36 @@ def admin_index():
 
 
 # 管理员信息
-@admin_blueprint.route('/info/', methods=['POST', 'GET'])
+@admin_blueprint.route('/info/', methods=['GET'])
 @is_login
 def info():
-    if request.method == 'GET':
+    admin_sign = int(request.args['id'])
+    print(admin_sign, '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+    return render_template('Admin_info.html')
+
+
+# 编辑/添加管理员
+@admin_blueprint.route('/edit/', methods=['POST'])
+def edit():
+    new_password = request.form['reUserPwd']
+    print(new_password)
+    if new_password == '':
+        exit()
+    else:
         admin_id = session.get('admin_id')
-        if admin_id:
-            admin_info = Admin.query.filter_by(ID=admin_id).first()
-        return render_template('Admin_info.html', admin_info=admin_info)
-    if request.method == 'POST':
-        new_password = request.form['reUserPwd']
-        print(new_password)
-        if new_password == '':
-            exit()
-        else:
-            admin_id = session.get('admin_id')
-            admin_info = Admin.query.filter_by(ID=admin_id).first()
-            ChangeTime = datetime.datetime.now()
-            my_pwd = api.create_pwd(new_password, api.strtotime(ChangeTime))
-            admin_info.UserPwd = my_pwd
-            admin_info.RegTime = ChangeTime
-            db.session.commit()
-            log_data['ActionName'] = '管理员类控制器'
-            log_data['ActionContent'] = '编辑管理员(' + str(admin_info.UserName) + '),管理员ID为' + str(admin_id)
-            api.adminlogs(log_data)
-            if not admin_info:
-                return
-            jumpurl = 'www.baidu.com'
-            return render_template('Public_success.html', jumpurl=jumpurl)
+        admin_info = Admin.query.filter_by(ID=admin_id).first()
+        ChangeTime = datetime.datetime.now()
+        my_pwd = api.create_pwd(new_password, api.strtotime(ChangeTime))
+        admin_info.UserPwd = my_pwd
+        admin_info.RegTime = ChangeTime
+        db.session.commit()
+        log_data['ActionName'] = '管理员类控制器'
+        log_data['ActionContent'] = '编辑管理员(' + str(admin_info.UserName) + '),管理员ID为' + str(admin_id)
+        api.adminlogs(log_data)
+        if not admin_info:
+            return
+        jumpurl = 'www.baidu.com'
+        return render_template('Public_success.html', jumpurl=jumpurl)
 
 
 # 删除管理员

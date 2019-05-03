@@ -2,7 +2,9 @@
 {% block content %}
     <div class="content-wrapper">
         <section class="content-header">
-            <h1>管理员列表</h1>
+            <h1>管理员列表
+                <small>Version 2.0</small>
+            </h1>
             <div class="input-group" style="width: 100%;">
                 <div style="width: 100%;">
                     <div class="form-group">
@@ -68,7 +70,10 @@
                                         </div>
                                         <div class="col-sm-7">
                                             <div class="dataTables_paginate paging_simple_numbers">
-                                                <button type="submit" class="btn btn-info pull-right">添加管理员</button>
+                                                <a href="#" id="0" class="toEdit">
+                                                    <button type="button" class="btn btn-info pull-right">添加管理员
+                                                    </button>
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -134,7 +139,8 @@
                             '<td>' + data[i]['RegTime'] + '</td>' +
                             '<td>' + data[i]['LastLoginIP'] + '</td>' +
                             '<td>' + data[i]['LastLoginTM'] + '</td>' +
-                            "<td>" + "<a href='#' >编辑&nbsp</a>" + "<a href='#' name='toDel' style='color: red' systemidvaule='" + data[i]['ID'] +
+                            "<td>" + "<a href='#' class='toEdit' id='" + data[i]['ID'] + "' >编辑&nbsp</a>" +
+                            "<a href='#' name='toDel' style='color: red' systemidvaule='" + data[i]['ID'] +
                             "' type='button' data-toggle='modal' data-target='#myModal'>删除</a>" +
                             "</td></tr>";
                         html += str;
@@ -212,7 +218,16 @@
                     })
                 });
             });
+        });
 
+        //添加/编辑管理员
+        $(function () {
+            $("a[class='toEdit']").each(function () {
+                $(this).click(function () {
+                    var id = $(this).attr("id");
+                    $(this).attr("href", "{{ url_for('admin.info') }}" + '?id=' + id)
+                });
+            });
         });
 
     </script>
