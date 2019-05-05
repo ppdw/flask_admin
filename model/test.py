@@ -190,3 +190,52 @@ class Gamelist(db.Model):
         self.Gid = Gid
         self.GameName = GameName
         self.GameID = GameID
+class Partner(db.Model):
+    __tablename__ = 'partner'
+
+    PartnerID = db.Column(db.INTEGER, primary_key=True)
+    PartnerName = db.Column(db.String(100), nullable=False)
+    Name = db.Column(db.String(100))
+    Mobile = db.Column(CHAR(11))
+    Email = db.Column(db.String(50))
+    Type = db.Column(db.INTEGER)
+    ExcjamgeRate = db.Column(DECIMAL(10, 4), nullable=False)
+    ServerIP = db.Column(db.String(100))
+    ServerPort = db.Column(db.INTEGER)
+    IsWeiXinpay = db.Column(db.INTEGER, nullable=False, server_default="0")
+    IsAlipay = db.Column(db.INTEGER, nullable=False, server_default="0")
+    IsCardpay = db.Column(db.INTEGER, nullable=False, server_default="0")
+    PayUrl = db.Column(db.String(300))
+    ExchangeUrl = db.Column(db.String(300))
+    DownUrl = db.Column(db.String(200))
+    ApkUrl = db.Column(db.String(200))
+    AndroidApkUrl = db.Column(db.String(200))
+    AndroidUrl = db.Column(db.String(200))
+    IosUrl = db.Column(db.String(200))
+    IsEnable = db.Column(db.INTEGER, nullable=False)
+    Adder = db.Column(db.String(50))
+    LastEditor = db.Column(db.String(50))
+    RegTime = db.Column(db.TIMESTAMP, nullable=False)
+    LastUpdateTM = db.Column(db.TIMESTAMP, server_default='0000-00-00 00:00:00')
+    IsFree = db.Column(db.INTEGER, nullable=False, server_default="0")
+    PayType = db.Column(db.INTEGER, nullable=False, server_default="0")
+    PreSales = db.Column(db.String(50))
+    PreSalesNo = db.Column(db.String(20))
+    AfterSales = db.Column(db.String(50))
+    AfterSalesNo = db.Column(db.String(20))
+    AgentNum = db.Column(db.INTEGER)
+    AloneNum = db.Column(db.INTEGER)
+    DeskNum = db.Column(db.Text)
+    DomainUrl = db.Column(db.String(200))
+    DenomRate = db.Column(db.INTEGER)
+    Isjbpay = db.Column(db.INTEGER, server_default="0")
+    Isjtpay = db.Column(db.INTEGER, server_default="0")
+    JbpayNo = db.Column(db.String(50))
+    RedType = db.Column(db.INTEGER, server_default="0")
+    wxappid = db.Column(db.String(50))
+    wxappsecret = db.Column(db.String(50))
+    Clientype = db.Column(db.INTEGER, server_default="0")
+    Is_Rate = db.Column(db.INTEGER, nullable=False, server_default="0")
+
+    def __init__(self, ExcjamgeRate):
+        self.ExcjamgeRate = ExcjamgeRate

@@ -21,6 +21,7 @@ from controller.sale import sale_blueprint
 from controller.sysmsg import sysmsg_blueprint
 from controller.user import user_blueprint
 from controller.nav import nav_blueprint
+from controller.client import client_blueprint
 
 
 def create_app():
@@ -45,6 +46,7 @@ def create_app():
     app.register_blueprint(blueprint=sysmsg_blueprint, url_prefix='/sysmsg')
     app.register_blueprint(blueprint=user_blueprint, url_prefix='/user')
     app.register_blueprint(blueprint=nav_blueprint, url_prefix='/nav')
+    app.register_blueprint(blueprint=client_blueprint, url_prefix='/client')
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@47.92.247.134:3306/WebDB'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # 设置session密钥

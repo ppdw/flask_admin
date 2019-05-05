@@ -147,7 +147,10 @@ def log():
     for admin_name in admin_info:
         user_list.append(admin_name.UserName)
     if admin_user != 'vipadmin':
-        user_list.remove('vipadmin')
+        try:
+            user_list.remove('vipadmin')
+        except:
+            pass
     return render_template('Admin_log.html', user_list=user_list, ACTION_NAME=Permission.ACTION_NAME)
 
 
